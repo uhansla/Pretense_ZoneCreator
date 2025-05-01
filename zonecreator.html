@@ -20,8 +20,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zone Creator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">-->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js">
     </script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -31,14 +32,33 @@
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/darkly/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        textarea { height: 600px; resize: vertical; display: none; }
-        pre code.hljs { padding: 1rem; background: #f8f9fa; display: block; height: 600px; overflow-y: auto; }
-        .text-red { color: #dc3545; }
-        .text-blue { color: #0d6efd; }
+        textarea {
+            height: 600px;
+            resize: vertical;
+            display: none;
+        }
+
+        pre code.hljs {
+            padding: 1rem;
+            background: #f8f9fa;
+            display: block;
+            height: 600px;
+            overflow-y: auto;
+        }
+
+        .text-red {
+            color: #dc3545;
+        }
+
+        .text-blue {
+            color: #0d6efd;
+        }
+
         .radio-highlight-red:has(input:checked) {
             background-color: #f8d7da;
             border-radius: 5px;
         }
+
         .radio-highlight-blue:has(input:checked) {
             background-color: #cfe2ff;
             border-radius: 5px;
@@ -120,7 +140,7 @@
     let presetUpgradeOptions = [];
 
     function getSideName(side) {
-        return side===1 ? 'blue' : 'red'
+        return side === 1 ? 'blue' : 'red'
     }
 
     function populatePresetUpgradeDropdown(selectElement) {
@@ -131,13 +151,13 @@
         });
     }
 
-    $(document).ready(function() {
-        $('#initFile').on('change', function(e) {
+    $(document).ready(function () {
+        $('#initFile').on('change', function (e) {
             const file = e.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 const content = e.target.result;
                 const matches = content.match(/presets\.[a-zA-Z0-9_\.]+/g);
                 if (matches) {
@@ -176,7 +196,7 @@
 
 // Create upgrade levels with nested upgrades container + add button
         function updateUpgradeLevelIndexes() {
-            $('.upgradeLevel').each(function(index) {
+            $('.upgradeLevel').each(function (index) {
                 $(this).attr('id', `upgradeLevel-${index}`);
                 $(this).find('label').text(`Hello ${index}`);
                 $(this).find('[id^="upgrades-"]').attr('id', `upgrades-${index}`);
@@ -220,7 +240,6 @@
             $(this).closest('.upgrade-item').remove();
         });
 
-
         $('#generateLua').click(function() {
             let rawZoneName = $('#zoneName').val().trim();
             let zoneKey = rawZoneName.toLowerCase().replace(/\s+/g, '_');
@@ -255,22 +274,30 @@
             }
 
             lua += `zones.${zoneKey}:defineUpgrades({\n`;
-            lua += `    [1] = {\n`;
 
-            $('.upgrade-item').each(function() {
-                let presetPath = $(this).find('.presetDropdown').val();
-                let extendedName = zoneKey+'-'+($(this).find('.extendedName').val()).trim()+'-'+getSideName(side);
-                if (presetPath && extendedName) {
-                    lua += `        ${presetPath}:extend({ name='${extendedName}' }),\n`;
-                }
+            $('.upgradeLevel').each(function(levelIndex) {
+                lua += `    [${levelIndex + 1}] = {\n`;
+
+                $(this).find('.upgrade-item').each(function() {
+                    let presetPath = $(this).find('.presetDropdown').val();
+                    let extendedName = zoneKey + '-' + $(this).find('.extendedName').val().trim() + '-' + getSideName(side);
+                    if (presetPath && extendedName) {
+                        lua += `        ${presetPath}:extend({ name='${extendedName}' }),\n`;
+                    }
+                });
+
+                lua += `    },\n`;
             });
 
-            lua += `    }\n})\n`;
+            lua += `})\n`;
 
             $('#output').val(lua);
             $('#highlightedLua').text(lua);
             hljs.highlightElement(document.getElementById('highlightedLua'));
         });
+
+
+
     });
 
     $('#highlightContainer').show();
