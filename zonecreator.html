@@ -123,8 +123,11 @@
     </div>
 
     <div class="col-md-5">
+
+        <div class="mb-1 d-flex">
+            <h4 for="output" class="form-label">Generated Lua Snippet</h4>
+        </div>
         <button id="generateLua" class="btn btn-primary mb-3">Generate Lua Code</button>
-        <label for="output" class="form-label">Generated Lua Snippet</label>
         <div class="mb-2 d-flex gap-2">
             <button id="toggleView" class="btn btn-outline-secondary btn-sm">Toggle View</button>
             <button id="copyCode" class="btn btn-outline-success btn-sm">Copy</button>
@@ -151,6 +154,14 @@
         });
     }
 
+    function populatePresetProductDropdown(selectElement) {
+        selectElement.empty();
+        selectElement.append('<option value="">-- Select Preset --</option>');
+        presetOptions.forEach(option => {
+            selectElement.append(`<option value="${option}">${option}</option>`);
+        });
+    }
+
     $(document).ready(function () {
         $('#initFile').on('change', function (e) {
             const file = e.target.files[0];
@@ -167,6 +178,9 @@
                 if (upgradeMatches) {
                     presetUpgradeOptions = [...new Set(upgradeMatches)].sort();
                 }
+
+                presetOptions = presetOptions.filter(item => !presetUpgradeOptions.includes(item));
+
             };
             reader.readAsText(file);
         });
@@ -273,7 +287,7 @@
             const productDiv = createProductItem();
             const container = $(this).closest('.upgrade-item').find('.products-list');
             container.append(productDiv);
-            populatePresetUpgradeDropdown(productDiv.find('.productDropdown'));
+            populatePresetProductDropdown(productDiv.find('.productDropdown'));
         });
 
 // Remove product
