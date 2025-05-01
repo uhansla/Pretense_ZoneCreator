@@ -339,30 +339,37 @@
             $('.upgradeLevel').each(function (levelIndex) {
                 lua += `    [${levelIndex + 1}] = {\n`;
 
+                const upgradeLines = [];
+
                 $(this).find('.upgrade-item').each(function () {
                     let presetPath = $(this).find('.presetDropdown').val();
                     let baseName = $(this).find('.extendedName').val().trim();
                     let extendedName = `${zoneKey}-${baseName}-${getSideName(side)}`;
+
                     if (presetPath && extendedName) {
-                        lua += `        ${presetPath}:extend({\n`
-                        lua += `            name='${extendedName}',\n`;
-                        lua += `                products = {\n`
-                        // Add nested products for this upgrade
+                        const productLines = [];
+
                         $(this).find('.product-item').each(function () {
                             let productPath = $(this).find('.productDropdown').val();
                             let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${getSideName(side)}`;
                             if (productPath && productName) {
-                                lua += `                   ${productPath}:extend({ name='${productName}' }),\n`;
+                                productLines.push(`                     ${productPath}:extend({ name='${productName}' })`);
                             }
                         });
+
+                        const productBlock = productLines.length
+                            ? `,\n                products = {\n${productLines.join(',\n')}\n                }`
+                            : '';
+
+                        upgradeLines.push(
+                            `        ${presetPath}:extend({\n            name='${extendedName}'${productBlock}\n        })`
+                        );
                     }
-                    lua += `               }\n`;
-                    lua += `           }),\n`;
-
-
                 });
 
-                lua += `    },\n`;
+                lua += upgradeLines.join(',\n') + (upgradeLines.length > 0 ? '\n' : '');
+                lua += `    }${levelIndex < $('.upgradeLevel').length - 1 ? ',' : ''}\n`;
+
             });
 
             lua += `})\n`;
@@ -371,6 +378,7 @@
             $('#highlightedLua').text(lua);
             hljs.highlightElement(document.getElementById('highlightedLua'));
         });
+
 
 
 
