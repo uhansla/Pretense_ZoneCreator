@@ -97,15 +97,16 @@
 <script>
     hljs.highlightAll();
     let presetOptions = [];
+    let presetUpgradeOptions = [];
 
     function getSideName(side) {
         return side===1 ? 'blue' : 'red'
     }
 
-    function populatePresetDropdown(selectElement) {
+    function populatePresetUpgradeDropdown(selectElement) {
         selectElement.empty();
         selectElement.append('<option value="">-- Select Preset --</option>');
-        presetOptions.forEach(option => {
+        presetUpgradeOptions.forEach(option => {
             selectElement.append(`<option value="${option}">${option}</option>`);
         });
     }
@@ -121,9 +122,10 @@
                 const matches = content.match(/presets\.[a-zA-Z0-9_\.]+/g);
                 if (matches) {
                     presetOptions = [...new Set(matches)].sort();
-                    alert('Presets loaded: ' + presetOptions.length);
-                } else {
-                    alert('No presets found in file.');
+                }
+                const upgradeMatches = content.match(/presets.upgrades\.[a-zA-Z0-9_\.]+/g);
+                if (upgradeMatches) {
+                    presetUpgradeOptions = [...new Set(upgradeMatches)].sort();
                 }
             };
             reader.readAsText(file);
@@ -148,7 +150,7 @@
         </div>
       `);
             $('#upgrades').append(upgradeDiv);
-            populatePresetDropdown(upgradeDiv.find('.presetDropdown'));
+            populatePresetUpgradeDropdown(upgradeDiv.find('.presetDropdown'));
         });
 
         $(document).on('click', '.remove-upgrade', function() {
