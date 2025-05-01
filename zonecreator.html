@@ -189,7 +189,7 @@
 // Reusable function to create a product item
         function createProductItem() {
             return $(`
-    <div class="card mb-2 product-item">
+    <div class="card mb-2 ms-3 product-item">
       <div class="card-body py-2">
         <div class="mb-2">
           <label class="form-label">Product Preset *</label>
@@ -210,7 +210,7 @@
 // Reusable function to create an upgrade item with nested products
         function createUpgradeCard() {
             return $(`
-    <div class="card mb-3 upgrade-item">
+    <div class="card mb-3 ms-5 upgrade-item">
       <div class="card-body">
         <div class="mb-3">
           <label class="form-label">Choose Preset *</label>
@@ -249,7 +249,7 @@
         $('#addUpgradeLevel').click(function () {
             const index = $('.upgradeLevel').length;
             const upgradeLevelDiv = $(`
-    <div id="upgradeLevel-${index}" class="upgradeLevel mb-2">
+    <div id="upgradeLevel-${index}" class="upgradeLevel ms-5 mb-2">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <h3>Level ${index}</h3>
         <button type="button" class="btn btn-sm btn-outline-danger remove-upgrade-level">Remove</button>
