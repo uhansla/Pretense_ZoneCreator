@@ -113,7 +113,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="maxResource" class="form-label">Max Resource (Optional)</label>
+                <label for="maxResource" class="form-label">Max Resource (optional)</label>
                 <input type="text" id="maxResource" class="form-control">
             </div>
 
@@ -122,7 +122,7 @@
                 <input type="text" id="airbaseName" class="form-control">
             </div>
 
-            <h2 class="mt-4">Upgrade Levels</h2>
+            <h4 class="mt-4">Upgrade Levels</h4>
             <div id="upgrade-levels" class="mb-3"></div>
             <button type="button" id="addUpgradeLevel" class="btn btn-secondary mb-3">Add Upgrade Level</button>
         </div>
@@ -194,8 +194,8 @@
         // UPGRADE LEVELS
 // Reusable function to create a product item
         function createProductItem() {
-            return $(`
-    <div class="card mb-2 ms-3 product-item">
+            const productDiv = $(`
+    <div class="card mb-2 product-item">
       <div class="card-body py-2">
         <div class="mb-2">
           <label class="form-label">Product Preset *</label>
@@ -211,11 +211,21 @@
       </div>
     </div>
   `);
+
+            // Auto-fill productName on preset selection
+            productDiv.find('.productDropdown').on('change', function () {
+                const selected = $(this).val();
+                const name = selected.split('.').pop();
+                productDiv.find('.productName').val(name);
+            });
+
+            return productDiv;
         }
+
 
 // Reusable function to create an upgrade item with nested products
         function createUpgradeCard() {
-            return $(`
+            const upgradeCard = $(`
     <div class="card mb-3 ms-5 upgrade-item">
       <div class="card-body">
         <div class="mb-3">
@@ -239,7 +249,17 @@
       </div>
     </div>
   `);
+
+            // Add logic to auto-fill the extendedName field
+            upgradeCard.find('.presetDropdown').on('change', function () {
+                const selected = $(this).val();
+                const name = selected.split('.').pop(); // extract after last dot
+                upgradeCard.find('.extendedName').val(name);
+            });
+
+            return upgradeCard;
         }
+
 
 // Update upgrade level index and nested references
         function updateUpgradeLevelIndexes() {
@@ -257,7 +277,7 @@
             const upgradeLevelDiv = $(`
     <div id="upgradeLevel-${index}" class="upgradeLevel ms-5 mb-2">
       <div class="d-flex justify-content-between align-items-center mb-2">
-        <h3>Level ${index}</h3>
+        <h5>Level ${index}</h5>
         <button type="button" class="btn btn-sm btn-outline-danger remove-upgrade-level">Remove</button>
       </div>
       <div id="upgrades-${index}" class="upgrades-list mb-2"></div>
