@@ -5,63 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zone Creator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        textarea { height: 600px; resize: vertical; display: none; }
+        pre code.hljs { padding: 1rem; background: #f8f9fa; display: block; height: 600px; overflow-y: auto; }
+        .text-red { color: #dc3545; }
+        .text-blue { color: #0d6efd; }
+        .radio-highlight-red:has(input:checked) {
+            background-color: #f8d7da;
+            border-radius: 5px;
+        }
+        .radio-highlight-blue:has(input:checked) {
+            background-color: #cfe2ff;
+            border-radius: 5px;
+        }
+    </style>
 </head>
-<body class="container py-4">
+<body class="container-fluid py-4">
 
 <h1 class="mb-4">Zone Creator</h1>
 
-<div id="zoneForm" class="mb-4">
-    <div class="mb-3">
-        <label for="zoneName" class="form-label">Zone Name</label>
-        <input type="text" id="zoneName" class="form-control">
+<div class="row">
+    <div class="col-md-7">
+        <div id="zoneForm" class="mb-4">
+            <div class="mb-3">
+                <label for="initFile" class="form-label">Upload init.lua to load presets</label>
+                <input type="file" id="initFile" class="form-control" accept=".lua">
+            </div>
+
+            <div class="mb-3">
+                <label for="zoneName" class="form-label">Zone Name *</label>
+                <input type="text" id="zoneName" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Initial Side *</label>
+                <div class="d-flex gap-3">
+                    <div class="form-check form-check-inline radio-highlight-red">
+                        <input class="form-check-input" type="radio" name="side" id="sideRed" value="1">
+                        <label class="form-check-label text-red" for="sideRed">Red (1)</label>
+                    </div>
+                    <div class="form-check form-check-inline radio-highlight-blue">
+                        <input class="form-check-input" type="radio" name="side" id="sideBlue" value="2">
+                        <label class="form-check-label text-blue" for="sideBlue">Blue (2)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-check mb-2">
+                <input type="checkbox" id="keepActive" class="form-check-input">
+                <label class="form-check-label" for="keepActive">Keep Active</label>
+            </div>
+
+            <div class="form-check mb-2">
+                <input type="checkbox" id="heloSpawn" class="form-check-input">
+                <label class="form-check-label" for="heloSpawn">🚁 Helicopter Spawn</label>
+            </div>
+
+            <div class="form-check mb-2">
+                <input type="checkbox" id="planeSpawn" class="form-check-input">
+                <label class="form-check-label" for="planeSpawn">✈️ Plane Spawn</label>
+            </div>
+
+            <div class="mb-3">
+                <label for="airbaseName" class="form-label">Airbase Name (optional)</label>
+                <input type="text" id="airbaseName" class="form-control">
+            </div>
+
+            <h2 class="mt-4">Upgrades</h2>
+            <div id="upgrades" class="mb-3"></div>
+            <button type="button" id="addUpgrade" class="btn btn-secondary mb-3">Add Upgrade</button>
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label for="side" class="form-label">Initial Side</label>
-        <select id="side" class="form-select">
-            <option value="">None</option>
-            <option value="1">Red (1)</option>
-            <option value="2">Blue (2)</option>
-        </select>
+    <div class="col-md-5">
+        <button id="generateLua" class="btn btn-primary mb-3">Generate Lua Code</button>
+        <label for="output" class="form-label">Generated Lua Snippet</label>
+        <pre><code id="highlightedLua" class="lua"></code></pre>
+        <textarea id="output" readonly class="form-control bg-light"></textarea>
     </div>
-
-    <div class="form-check mb-2">
-        <input type="checkbox" id="keepActive" class="form-check-input">
-        <label class="form-check-label" for="keepActive">Keep Active</label>
-    </div>
-
-    <div class="form-check mb-2">
-        <input type="checkbox" id="heloSpawn" class="form-check-input">
-        <label class="form-check-label" for="heloSpawn">Helicopter Spawn</label>
-    </div>
-
-    <div class="form-check mb-2">
-        <input type="checkbox" id="planeSpawn" class="form-check-input">
-        <label class="form-check-label" for="planeSpawn">Plane Spawn</label>
-    </div>
-
-    <div class="mb-3">
-        <label for="airbaseName" class="form-label">Airbase Name (optional)</label>
-        <input type="text" id="airbaseName" class="form-control">
-    </div>
-
-    <div class="mb-3">
-        <label for="initFile" class="form-label">Upload init.lua to load presets</label>
-        <input type="file" id="initFile" class="form-control" accept=".lua">
-    </div>
-
-    <h2 class="mt-4">Upgrades</h2>
-    <div id="upgrades" class="mb-3"></div>
-    <button type="button" id="addUpgrade" class="btn btn-secondary mb-3">Add Upgrade</button>
-
-    <button id="generateLua" class="btn btn-primary">Generate Lua Code</button>
 </div>
 
-<textarea id="output" readonly class="form-control" placeholder="Your generated Lua code will appear here..."></textarea>
-
 <script>
+    hljs.highlightAll();
     let presetOptions = [];
 
     function populatePresetDropdown(selectElement) {
@@ -93,15 +122,18 @@
 
         $('#addUpgrade').click(function() {
             const upgradeDiv = $(`
-        <div class="card mb-3">
+        <div class="card mb-3 upgrade-item">
           <div class="card-body">
             <div class="mb-3">
-              <label class="form-label">Choose Preset</label>
+              <label class="form-label">Choose Preset *</label>
               <select class="form-select presetDropdown"></select>
             </div>
             <div class="mb-3">
-              <label class="form-label">Extended Name</label>
+              <label class="form-label">Extended Name *</label>
               <input type="text" class="form-control extendedName">
+            </div>
+            <div class="text-end">
+              <button type="button" class="btn btn-sm btn-outline-danger remove-upgrade">Remove</button>
             </div>
           </div>
         </div>
@@ -110,41 +142,47 @@
             populatePresetDropdown(upgradeDiv.find('.presetDropdown'));
         });
 
+        $(document).on('click', '.remove-upgrade', function() {
+            $(this).closest('.upgrade-item').remove();
+        });
+
         $('#generateLua').click(function() {
-            let zoneName = $('#zoneName').val().trim();
-            let side = $('#side').val();
+            let rawZoneName = $('#zoneName').val().trim();
+            let zoneKey = rawZoneName.toLowerCase().replace(/\s+/g, '_');
+
+            let side = $('input[name="side"]:checked').val();
             let keepActive = $('#keepActive').is(':checked');
             let heloSpawn = $('#heloSpawn').is(':checked');
             let planeSpawn = $('#planeSpawn').is(':checked');
             let airbaseName = $('#airbaseName').val().trim();
 
-            if (!zoneName) {
+            if (!rawZoneName) {
                 alert('Zone Name is required.');
                 return;
             }
 
-            let lua = `zones.${zoneName} = ZoneCommand:new("${zoneName}")\n`;
+            let lua = `zones.${zoneKey} = ZoneCommand:new("${rawZoneName}")\n`;
 
-            if (side !== "") {
-                lua += `zones.${zoneName}.initialState = { side=${side} }\n`;
+            if (side !== undefined) {
+                lua += `zones.${zoneKey}.initialState = { side=${side} }\n`;
             }
             if (keepActive) {
-                lua += `zones.${zoneName}.keepActive = true\n`;
+                lua += `zones.${zoneKey}.keepActive = true\n`;
             }
             if (heloSpawn) {
-                lua += `zones.${zoneName}.isHeloSpawn = true\n`;
+                lua += `zones.${zoneKey}.isHeloSpawn = true\n`;
             }
             if (planeSpawn) {
-                lua += `zones.${zoneName}.isPlaneSpawn = true\n`;
+                lua += `zones.${zoneKey}.isPlaneSpawn = true\n`;
             }
             if (airbaseName) {
-                lua += `zones.${zoneName}.airbaseName = "${airbaseName}"\n`;
+                lua += `zones.${zoneKey}.airbaseName = "${airbaseName}"\n`;
             }
 
-            lua += `zones.${zoneName}:defineUpgrades({\n`;
+            lua += `zones.${zoneKey}:defineUpgrades({\n`;
             lua += `    [1] = {\n`;
 
-            $('.upgrade-item, .card-body').each(function() {
+            $('.upgrade-item').each(function() {
                 let presetPath = $(this).find('.presetDropdown').val();
                 let extendedName = $(this).find('.extendedName').val().trim();
                 if (presetPath && extendedName) {
@@ -155,6 +193,8 @@
             lua += `    }\n})\n`;
 
             $('#output').val(lua);
+            $('#highlightedLua').text(lua);
+            hljs.highlightElement(document.getElementById('highlightedLua'));
         });
     });
 </script>
