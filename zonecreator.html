@@ -409,9 +409,30 @@
                         $(this).find('.product-item').each(function () {
                             let productPath = $(this).find('.productDropdown').val();
                             let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${getSideName(side)}-${p_count}`;
+
                             if (productPath && productName) {
-                                productLines.push(`                     ${productPath}:extend({ name='${productName}' })`);
+                                const fields = [];
+
+                                // Extract optional mission field values
+                                const altitude = $(this).find('[name="altitude"]').val();
+                                const range = $(this).find('[name="range"]').val();
+                                const freq = $(this).find('[name="freq"]').val();
+                                const tacan = $(this).find('[name="tacan"]').val();
+                                const variant = $(this).find('[name="variant"]').val();
+                                const expend = $(this).find('[name="expend"]').val();
+
+                                // Always include name
+                                fields.push(`name='${productName}'`);
+                                if (altitude) fields.push(`altitude=${altitude}`);
+                                if (range) fields.push(`range=${range}`);
+                                if (freq) fields.push(`freq='${freq}'`);
+                                if (tacan) fields.push(`tacan='${tacan}'`);
+                                if (variant) fields.push(`variant='${variant}'`);
+                                if (expend) fields.push(`expend=${expend}`);
+
+                                productLines.push(`                     ${productPath}:extend({ ${fields.join(', ')} })`);
                             }
+
                             p_count += 1;
                         });
 
