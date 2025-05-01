@@ -98,6 +98,10 @@
     hljs.highlightAll();
     let presetOptions = [];
 
+    function getSideName(side) {
+        return side===1 ? 'blue' : 'red'
+    }
+
     function populatePresetDropdown(selectElement) {
         selectElement.empty();
         selectElement.append('<option value="">-- Select Preset --</option>');
@@ -134,7 +138,7 @@
               <select class="form-select presetDropdown"></select>
             </div>
             <div class="mb-3">
-              <label class="form-label">Extended Name *</label>
+              <label class="form-label">Preset Name (will be prefixed with Zone name and suffixed by side) *</label>
               <input type="text" class="form-control extendedName">
             </div>
             <div class="text-end">
@@ -189,7 +193,7 @@
 
             $('.upgrade-item').each(function() {
                 let presetPath = $(this).find('.presetDropdown').val();
-                let extendedName = $(this).find('.extendedName').val().trim();
+                let extendedName = zoneKey+'-'+($(this).find('.extendedName').val()).trim()+'-'+getSideName(side);
                 if (presetPath && extendedName) {
                     lua += `        ${presetPath}:extend({ name='${extendedName}' }),\n`;
                 }
