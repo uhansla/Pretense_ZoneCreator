@@ -205,6 +205,21 @@
           <label class="form-label">Product Name *</label>
           <input type="text" class="form-control productName">
         </div>
+        <div class="optionalMissionFields d-none mt-2">
+          <label class="form-label">Optional Mission Fields</label>
+          <div class="mb-2"><input type="number" class="form-control" placeholder="Altitude (optional)" name="altitude"></div>
+          <div class="mb-2"><input type="number" class="form-control" placeholder="Range (optional)" name="range"></div>
+          <div class="mb-2"><input type="text" class="form-control" placeholder="Frequency (optional)" name="freq"></div>
+          <div class="mb-2"><input type="text" class="form-control" placeholder="TACAN (optional)" name="tacan"></div>
+          <div class="mb-2"><input type="text" class="form-control" placeholder="Variant (optional)" name="variant"></div>
+          <div class="mb-2">
+            <select class="form-select" name="expend">
+              <option value="">Expend (optional)</option>
+              <option value="AI.Task.WeaponExpend.ALL">AI.Task.WeaponExpend.ALL</option>
+              <option value="AI.Task.WeaponExpend.ONE">AI.Task.WeaponExpend.ONE</option>
+            </select>
+          </div>
+        </div>
         <div class="text-end">
           <button type="button" class="btn btn-sm btn-outline-danger remove-product">Remove Product</button>
         </div>
@@ -212,15 +227,23 @@
     </div>
   `);
 
-            // Auto-fill productName on preset selection
+            // Auto-fill name from selected preset
             productDiv.find('.productDropdown').on('change', function () {
                 const selected = $(this).val();
                 const name = selected.split('.').pop();
                 productDiv.find('.productName').val(name);
+
+                // Show/hide mission fields based on `.missions.` match
+                if (selected.includes('.missions.')) {
+                    productDiv.find('.optionalMissionFields').removeClass('d-none');
+                } else {
+                    productDiv.find('.optionalMissionFields').addClass('d-none');
+                }
             });
 
             return productDiv;
         }
+
 
 
 // Reusable function to create an upgrade item with nested products
