@@ -353,12 +353,14 @@
                     if (presetPath && extendedName) {
                         const productLines = [];
 
+                        p_count = 1
                         $(this).find('.product-item').each(function () {
                             let productPath = $(this).find('.productDropdown').val();
-                            let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${getSideName(side)}`;
+                            let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${getSideName(side)}-${p_count}`;
                             if (productPath && productName) {
                                 productLines.push(`                     ${productPath}:extend({ name='${productName}' })`);
                             }
+                            p_count += 1;
                         });
 
                         const productBlock = productLines.length
