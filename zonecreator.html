@@ -238,7 +238,7 @@
 // Update upgrade level index and nested references
         function updateUpgradeLevelIndexes() {
             $('.upgradeLevel').each(function (index) {
-                $(this).attr('id', `upgradeLevel-${index}`);
+                $(this).attr('id', `upgradeLevel-${index+1}`);
                 $(this).find('h3').text(`Level ${index}`);
                 $(this).find('[id^="upgrades-"]').attr('id', `upgrades-${index}`);
                 $(this).find('[data-upgrade-button]').attr('data-upgrade-button', index);
@@ -247,7 +247,7 @@
 
 // Add upgrade level
         $('#addUpgradeLevel').click(function () {
-            const index = $('.upgradeLevel').length;
+            const index = $('.upgradeLevel').length+1;
             const upgradeLevelDiv = $(`
     <div id="upgradeLevel-${index}" class="upgradeLevel ms-5 mb-2">
       <div class="d-flex justify-content-between align-items-center mb-2">
