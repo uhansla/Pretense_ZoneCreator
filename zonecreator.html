@@ -113,6 +113,11 @@
             </div>
 
             <div class="mb-3">
+                <label for="maxResource" class="form-label">Max Resource (Optional)</label>
+                <input type="text" id="maxResource" class="form-control">
+            </div>
+
+            <div class="mb-3">
                 <label for="airbaseName" class="form-label">Airbase Name (optional)</label>
                 <input type="text" id="airbaseName" class="form-control">
             </div>
@@ -311,6 +316,7 @@
             let heloSpawn = $('#heloSpawn').is(':checked');
             let planeSpawn = $('#planeSpawn').is(':checked');
             let airbaseName = $('#airbaseName').val().trim();
+            let maxResourceValue = $('#maxResource').val().trim();
 
             if (!rawZoneName) {
                 $('#errorMessage').text('Zone Name is required.').removeClass('d-none');
@@ -333,6 +339,9 @@
             }
             if (planeSpawn) {
                 lua += `zones.${zoneKey}.isPlaneSpawn = true\n`;
+            }
+            if (maxResourceValue) {
+                lua += `zones.${zoneKey}.maxResource = ${maxResourceValue}\n`;
             }
             if (airbaseName) {
                 lua += `zones.${zoneKey}.airbaseName = "${airbaseName}"\n`;
