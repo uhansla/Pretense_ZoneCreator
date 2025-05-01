@@ -172,8 +172,28 @@
         });
 
         // UPGRADE LEVELS
+// Reusable function to create a product item
+        function createProductItem() {
+            return $(`
+    <div class="card mb-2 product-item">
+      <div class="card-body py-2">
+        <div class="mb-2">
+          <label class="form-label">Product Preset *</label>
+          <select class="form-select productDropdown"></select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Product Name *</label>
+          <input type="text" class="form-control productName">
+        </div>
+        <div class="text-end">
+          <button type="button" class="btn btn-sm btn-outline-danger remove-product">Remove Product</button>
+        </div>
+      </div>
+    </div>
+  `);
+        }
 
-        // Reusable function to create an upgrade item
+// Reusable function to create an upgrade item with nested products
         function createUpgradeCard() {
             return $(`
     <div class="card mb-3 upgrade-item">
@@ -186,24 +206,32 @@
           <label class="form-label">Preset Name (will be prefixed with Zone name and suffixed by side) *</label>
           <input type="text" class="form-control extendedName">
         </div>
+
+        <div class="mb-2">
+          <label class="form-label">Products for this Upgrade:</label>
+          <div class="products-list mb-2"></div>
+          <button type="button" class="btn btn-sm btn-info add-product">Add Product</button>
+        </div>
+
         <div class="text-end">
-          <button type="button" class="btn btn-sm btn-outline-danger remove-upgrade">Remove</button>
+          <button type="button" class="btn btn-sm btn-outline-danger remove-upgrade">Remove Upgrade</button>
         </div>
       </div>
     </div>
   `);
         }
 
-// Create upgrade levels with nested upgrades container + add button
+// Update upgrade level index and nested references
         function updateUpgradeLevelIndexes() {
             $('.upgradeLevel').each(function (index) {
                 $(this).attr('id', `upgradeLevel-${index}`);
-                $(this).find('label').text(`Hello ${index}`);
+                $(this).find('h3').text(`Level ${index}`);
                 $(this).find('[id^="upgrades-"]').attr('id', `upgrades-${index}`);
                 $(this).find('[data-upgrade-button]').attr('data-upgrade-button', index);
             });
         }
 
+// Add upgrade level
         $('#addUpgradeLevel').click(function () {
             const index = $('.upgradeLevel').length;
             const upgradeLevelDiv = $(`
@@ -220,13 +248,13 @@
             $('#upgrade-levels').append(upgradeLevelDiv);
         });
 
-// Handle removing a level
+// Remove upgrade level
         $(document).on('click', '.remove-upgrade-level', function () {
             $(this).closest('.upgradeLevel').remove();
             updateUpgradeLevelIndexes();
         });
 
-// Handle adding upgrades into correct upgrade level
+// Add upgrade to upgrade level
         $(document).on('click', '.add-upgrade', function () {
             const levelIndex = $(this).attr('data-upgrade-button');
             const container = $(`#upgrades-${levelIndex}`);
@@ -235,12 +263,31 @@
             populatePresetUpgradeDropdown(upgradeDiv.find('.presetDropdown'));
         });
 
+// Remove upgrade
+        $(document).on('click', '.remove-upgrade', function () {
+            $(this).closest('.upgrade-item').remove();
+        });
+
+// Add product to specific upgrade
+        $(document).on('click', '.add-product', function () {
+            const productDiv = createProductItem();
+            const container = $(this).closest('.upgrade-item').find('.products-list');
+            container.append(productDiv);
+            populatePresetUpgradeDropdown(productDiv.find('.productDropdown'));
+        });
+
+// Remove product
+        $(document).on('click', '.remove-product', function () {
+            $(this).closest('.product-item').remove();
+        });
+
+
 // Handle removing upgrades
         $(document).on('click', '.remove-upgrade', function () {
             $(this).closest('.upgrade-item').remove();
         });
 
-        $('#generateLua').click(function() {
+        $('#generateLua').click(function () {
             let rawZoneName = $('#zoneName').val().trim();
             let zoneKey = rawZoneName.toLowerCase().replace(/\s+/g, '_');
 
@@ -275,15 +322,30 @@
 
             lua += `zones.${zoneKey}:defineUpgrades({\n`;
 
-            $('.upgradeLevel').each(function(levelIndex) {
+            $('.upgradeLevel').each(function (levelIndex) {
                 lua += `    [${levelIndex + 1}] = {\n`;
 
-                $(this).find('.upgrade-item').each(function() {
+                $(this).find('.upgrade-item').each(function () {
                     let presetPath = $(this).find('.presetDropdown').val();
-                    let extendedName = zoneKey + '-' + $(this).find('.extendedName').val().trim() + '-' + getSideName(side);
+                    let baseName = $(this).find('.extendedName').val().trim();
+                    let extendedName = `${zoneKey}-${baseName}-${getSideName(side)}`;
                     if (presetPath && extendedName) {
-                        lua += `        ${presetPath}:extend({ name='${extendedName}' }),\n`;
+                        lua += `        ${presetPath}:extend({\n`
+                        lua += `            name='${extendedName}',\n`;
+                        lua += `                products = {\n`
+                        // Add nested products for this upgrade
+                        $(this).find('.product-item').each(function () {
+                            let productPath = $(this).find('.productDropdown').val();
+                            let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${getSideName(side)}`;
+                            if (productPath && productName) {
+                                lua += `                   ${productPath}:extend({ name='${productName}' }),\n`;
+                            }
+                        });
                     }
+                    lua += `               }\n`;
+                    lua += `           }),\n`;
+
+
                 });
 
                 lua += `    },\n`;
@@ -295,6 +357,7 @@
             $('#highlightedLua').text(lua);
             hljs.highlightElement(document.getElementById('highlightedLua'));
         });
+
 
 
 
