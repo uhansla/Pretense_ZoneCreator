@@ -68,6 +68,7 @@
 <body class="container-fluid py-4">
 
 <h1 class="mb-4">✈️ Pretense Zone Creator</h1>
+<div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
 
 <div class="row">
     <div class="col-md-7">
@@ -312,9 +313,12 @@
             let airbaseName = $('#airbaseName').val().trim();
 
             if (!rawZoneName) {
-                alert('Zone Name is required.');
+                $('#errorMessage').text('Zone Name is required.').removeClass('d-none');
                 return;
+            } else {
+                $('#errorMessage').addClass('d-none').text('');
             }
+
 
             let lua = `zones.${zoneKey} = ZoneCommand:new("${rawZoneName}")\n`;
 
@@ -380,6 +384,14 @@
         });
 
 
+        // Automatically trigger Lua generation on any input change
+        $('#zoneForm').on('input change', 'input, select, textarea', function () {
+            $('#generateLua').trigger('click');
+        });
+
+        $('#zoneForm').on('input change', function () {
+            $('#errorMessage').addClass('d-none').text('');
+        });
 
 
 
