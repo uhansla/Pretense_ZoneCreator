@@ -63,6 +63,26 @@
             background-color: #cfe2ff;
             border-radius: 5px;
         }
+
+        .left-scroll {
+            max-height: 90vh;
+            overflow-y: auto;
+            padding-right: 1rem; /* avoid scrollbar overlap */
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            resize: none; /* optional: disables manual resizing */
+        }
+
+        #highlightContainer {
+            white-space: pre-wrap;     /* enables wrapping at whitespace */
+            word-break: break-word;    /* breaks long words */
+            overflow-wrap: break-word; /* ensures wrapping works in all browsers */
+        }
+
+
     </style>
 </head>
 <body class="container-fluid py-4">
@@ -71,7 +91,7 @@
 <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
 
 <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-7 left-scroll">
         <div id="zoneForm" class="mb-4">
             <div class="mb-3">
                 <label for="initFile" class="form-label">Upload init.lua to load presets</label>
@@ -138,8 +158,11 @@
             <button id="toggleView" class="btn btn-outline-secondary btn-sm">Toggle View</button>
             <button id="copyCode" class="btn btn-outline-success btn-sm">Copy</button>
         </div>
-        <pre id="highlightContainer"><code id="highlightedLua" class="theme-atom-on-dark bg-dark lua"></code></pre>
-        <textarea id="output" readonly class="form-control bg-light"></textarea>
+        <div class="h-100 w-100">
+            <pre id="highlightContainer">
+                <code id="highlightedLua" class="theme-atom-on-dark bg-dark lua"></code></pre>
+        </div>
+        <textarea id="output" wrap="soft" readonly class="form-control bg-light"></textarea>
     </div>
 </div>
 
@@ -321,9 +344,11 @@
         $(document).on('click', '.remove-upgrade-level', function () {
             $(this).closest('.upgradeLevel').remove();
             updateUpgradeLevelIndexes();
+            // Regenerate LUA
+            $('#generateLua').trigger('click');
         });
 
-// Add upgrade to upgrade level
+// Add upgrade preset to upgrade level
         $(document).on('click', '.add-upgrade', function () {
             const levelIndex = $(this).attr('data-upgrade-button');
             const container = $(`#upgrades-${levelIndex}`);
@@ -335,6 +360,8 @@
 // Remove upgrade
         $(document).on('click', '.remove-upgrade', function () {
             $(this).closest('.upgrade-item').remove();
+            // Regenerate LUA
+            $('#generateLua').trigger('click');
         });
 
 // Add product to specific upgrade
@@ -348,12 +375,16 @@
 // Remove product
         $(document).on('click', '.remove-product', function () {
             $(this).closest('.product-item').remove();
+            // Regenerate LUA
+            $('#generateLua').trigger('click');
         });
 
 
 // Handle removing upgrades
         $(document).on('click', '.remove-upgrade', function () {
             $(this).closest('.upgrade-item').remove();
+            // Regenerate LUA
+            $('#generateLua').trigger('click');
         });
 
 //Duplicate Levels
@@ -401,7 +432,6 @@
             updateUpgradeLevelIndexes();
             // Regenerate LUA
             $('#generateLua').trigger('click');
-
         });
 
 
