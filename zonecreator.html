@@ -287,10 +287,12 @@
 // Update upgrade level index and nested references
         function updateUpgradeLevelIndexes() {
             $('.upgradeLevel').each(function (index) {
-                $(this).attr('id', `upgradeLevel-${index+1}`);
-                $(this).find('h3').text(`Level ${index}`);
+                let print_index = index + 1;
+                $(this).attr('id', `upgradeLevel-${print_index}`);
+                $(this).find('h5').text(`Level ${print_index}`);
                 $(this).find('[id^="upgrades-"]').attr('id', `upgrades-${index}`);
                 $(this).find('[data-upgrade-button]').attr('data-upgrade-button', index);
+
             });
         }
 
@@ -301,10 +303,14 @@
     <div id="upgradeLevel-${index}" class="upgradeLevel ms-5 mb-2">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <h5>Level ${index}</h5>
-        <button type="button" class="btn btn-sm btn-outline-danger remove-upgrade-level">Remove</button>
+        <div class="btn-group gap-4">
+          <button type="button" class="btn btn-sm btn-primary duplicate-upgrade-level">Duplicate</button>
+          <button type="button" class="btn btn-sm btn-danger remove-upgrade-level">Remove</button>
+        </div>
+
       </div>
       <div id="upgrades-${index}" class="upgrades-list mb-2"></div>
-      <button type="button" class="btn btn-sm btn-secondary add-upgrade" data-upgrade-button="${index}">Add Upgrade</button>
+      <button type="button" class="btn btn-sm btn-secondary add-upgrade" data-upgrade-button="${index}">Add Upgrade Preset</button>
       <hr/>
     </div>
   `);
@@ -350,6 +356,58 @@
             $(this).closest('.upgrade-item').remove();
         });
 
+//Duplicate Levels
+        $(document).on('click', '.duplicate-upgrade-level', function () {
+            const original = $(this).closest('.upgradeLevel');
+            const clone = original.clone(false, false); // clone without events
+
+            // Manually copy values from original to clone
+            original.find('select').each(function (i) {
+                const value = $(this).val();
+                clone.find('select').eq(i).val(value);
+            });
+            original.find('input').each(function (i) {
+                const value = $(this).val();
+                clone.find('input').eq(i).val(value);
+            });
+            original.find('textarea').each(function (i) {
+                const value = $(this).val();
+                clone.find('textarea').eq(i).val(value);
+            });
+
+            // Append the clone
+            $('#upgrade-levels').append(clone);
+
+            // Rebind handlers manually if needed (only necessary if clone(false,false) used)
+            clone.find('.presetDropdown').on('change', function () {
+                const selected = $(this).val();
+                const name = selected.split('.').pop();
+                clone.find('.extendedName').val(name);
+            });
+
+            clone.find('.productDropdown').on('change', function () {
+                const selected = $(this).val();
+                const name = selected.split('.').pop();
+                clone.find('.productName').val(name);
+
+                if (selected.includes('.missions.')) {
+                    clone.find('.optionalMissionFields').removeClass('d-none');
+                } else {
+                    clone.find('.optionalMissionFields').addClass('d-none');
+                }
+            });
+
+            // Reindex all upgrade levels
+            updateUpgradeLevelIndexes();
+            // Regenerate LUA
+            $('#generateLua').trigger('click');
+
+        });
+
+
+
+
+// LUA Generation
         $('#generateLua').click(function () {
             let rawZoneName = $('#zoneName').val().trim();
             let zoneKey = rawZoneName.toLowerCase().replace(/\s+/g, '_');
