@@ -462,31 +462,56 @@
                 $(this).find('h5').text(`Level ${print_index}`);
                 $(this).find('[id^="upgrades-"]').attr('id', `upgrades-${index}`);
                 $(this).find('[data-upgrade-button]').attr('data-upgrade-button', index);
+                if (print_index>1) {
+                    $(this).find('.duplicate-upgrade-level').addClass('d-none');
+                } else {
+                    $(this).find('.duplicate-upgrade-level').removeClass('d-none');
+                }
 
             });
         }
 
 // Add upgrade level
         $(document).on('click', '.add-upgrade-level', function () {
+
+            const upgradeContainer = $(this).closest('.zone-container');
+            const upgradeLevels = upgradeContainer.find('.upgradeLevel');
+            const addButton = $(this);
+
+            if (upgradeLevels.length >= 2) {
+                addButton.prop('disabled', true);
+                return;
+            }
+
             // console.log(this)
             const index = $(this).parent().find('.upgradeLevel').length+1;
             // console.log(index);
             const upgradeLevelDiv = $(`
-    <div id="upgradeLevel-${index}" class="upgradeLevel ms-5 mb-2">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h5>Level ${index}</h5>
-        <div class="btn-group gap-4">
-          <button type="button" class="btn btn-sm btn-primary duplicate-upgrade-level">Duplicate</button>
-          <button type="button" class="btn btn-sm btn-danger remove-upgrade-level">Remove</button>
-        </div>
+                <div id="upgradeLevel-${index}" class="upgradeLevel ms-5 mb-2">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5>Level ${index}</h5>
+                    <div class="btn-group gap-4">
+                      <button type="button" class="btn btn-sm btn-primary duplicate-upgrade-level">Duplicate</button>
+                      <button type="button" class="btn btn-sm btn-danger remove-upgrade-level">Remove</button>
+                    </div>
 
-      </div>
-      <div id="upgrades-${index}" class="upgrades-list mb-2"></div>
-      <button type="button" class="btn btn-sm btn-secondary add-upgrade" data-upgrade-button="${index}">Add Upgrade Preset</button>
-      <hr/>
-    </div>
-  `);
+                  </div>
+                  <div id="upgrades-${index}" class="upgrades-list mb-2"></div>
+                  <button type="button" class="btn btn-sm btn-secondary add-upgrade" data-upgrade-button="${index}">Add Upgrade Preset</button>
+                  <hr/>
+                </div>
+              `);
+
+            if (index > 1) {
+                // Remove the duplicate button
+                upgradeLevelDiv.find('.duplicate-upgrade-level').addClass('d-none');
+            }
+
             $(this).parent().find('.upgrade-levels').append(upgradeLevelDiv);
+            // Disable add button if now at max
+            if (upgradeContainer.find('.upgradeLevel').length >= 2) {
+                addButton.prop('disabled', true);
+            }
         });
 
 // Remove upgrade level
@@ -495,6 +520,10 @@
             // console.log(upgrade_container)
             $(this).closest('.upgradeLevel').remove();
             updateUpgradeLevelIndexes(upgrade_container);
+
+            // Re-enable the "Add Upgrade Level" button
+            upgrade_container.parent().find('.add-upgrade-level').prop('disabled', false);
+
             // Regenerate LUA
             $('#generateLua').trigger('click');
         });
@@ -664,7 +693,8 @@
                         $(this).find('.upgrade-item').each(function () {
                             let presetPath = $(this).find('.presetDropdown').val();
                             let baseName = $(this).find('.extendedName').val().trim();
-                            let extendedName = `${zoneKey}-${baseName}-${getSideName(side)}`;
+                            let sideColor = levelIndex===1 ? 'red' : 'blue'
+                            let extendedName = `${zoneKey}-${baseName}-${sideColor}`;
 
                             if (presetPath && extendedName) {
                                 const productLines = [];
@@ -672,7 +702,7 @@
                                 p_count = 1
                                 $(this).find('.product-item').each(function () {
                                     let productPath = $(this).find('.productDropdown').val();
-                                    let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${getSideName(side)}-${p_count}`;
+                                    let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${sideColor}-${p_count}`;
 
                                     if (productPath && productName) {
                                         const fields = [];
