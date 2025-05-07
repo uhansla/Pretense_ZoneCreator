@@ -182,14 +182,14 @@
     function createZoneForm(index) {
         const zoneForm = $(
             `
-    <div class="accordion-item">
+    <div id="zoneForm${index+1}" class="accordion-item">
         <h2 class="accordion-header">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#zonecollapse${index + 1}" aria-expanded="true" aria-controls="zonecollapse${index + 1}">
                 Zone ${index + 1}
             </button>
         </h2>
         <div id="zonecollapse${index + 1}" class="accordion-collapse collapse show" data-bs-parent="#zoneList">
-            <div class="accordion-body">
+            <div class="accordion-body" data-zone-index="${index}">
                 <h4 class="mb-3">Zone ${index + 1}</h4>
                 <div class="mb-3">
                     <label for="zoneName" class="form-label">Zone Name *</label>
@@ -237,7 +237,7 @@
 
                 <h4 class="mt-4">Upgrade Levels</h4>
                 <div id="upgrade-levels" class="mb-3"></div>
-                <button type="button" id="addUpgradeLevel" class="btn btn-secondary mb-3">Add Upgrade Level</button>
+                <button type="button" id="addUpgradeLevel" class="btn btn-secondary mb-3 add-upgrade-level" data-upgrade-level-button="${index}">Add Upgrade Level</button>
             </div>
         </div>
     </div>
@@ -405,7 +405,7 @@
         }
 
 // Add upgrade level
-        $('.add-ugrade-level').click(function () {
+        $(document).on('click', '.add-upgrade-level', function () {
             const index = $('.upgradeLevel').length+1;
             const upgradeLevelDiv = $(`
     <div id="upgradeLevel-${index}" class="upgradeLevel ms-5 mb-2">
@@ -651,11 +651,11 @@
 
 
         // Automatically trigger Lua generation on any input change
-        $('#zoneForm').on('input change', 'input, select, textarea', function () {
+        $('#zonesList').on('input change', 'input, select, textarea', function () {
             $('#generateLua').trigger('click');
         });
 
-        $('#zoneForm').on('input change', function () {
+        $('#zonesList').on('input change', function () {
             $('#errorMessage').addClass('d-none').text('');
         });
 
