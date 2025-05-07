@@ -398,9 +398,12 @@
 
 
 // Update upgrade level index and nested references
-        function updateUpgradeLevelIndexes() {
-            $(this).find('.upgradeLevel').each(function (index) {
+        function updateUpgradeLevelIndexes(upgrade_levels) {
+            // console.log(upgrade_levels);
+            upgrade_levels.find('.upgradeLevel').each(function (index) {
+                // console.log(this)
                 let print_index = index + 1;
+                // console.log(print_index);
                 $(this).attr('id', `upgradeLevel-${print_index}`);
                 $(this).find('h5').text(`Level ${print_index}`);
                 $(this).find('[id^="upgrades-"]').attr('id', `upgrades-${index}`);
@@ -412,7 +415,8 @@
 // Add upgrade level
         $(document).on('click', '.add-upgrade-level', function () {
             // console.log(this)
-            const index = $(this).find('.add-upgrade-level').length+1;
+            const index = $(this).parent().find('.upgradeLevel').length+1;
+            // console.log(index);
             const upgradeLevelDiv = $(`
     <div id="upgradeLevel-${index}" class="upgradeLevel ms-5 mb-2">
       <div class="d-flex justify-content-between align-items-center mb-2">
@@ -433,8 +437,10 @@
 
 // Remove upgrade level
         $(document).on('click', '.remove-upgrade-level', function () {
+            let upgrade_container = $(this).closest('.upgrade-levels')
+            // console.log(upgrade_container)
             $(this).closest('.upgradeLevel').remove();
-            updateUpgradeLevelIndexes();
+            updateUpgradeLevelIndexes(upgrade_container);
             // Regenerate LUA
             $('#generateLua').trigger('click');
         });
@@ -442,7 +448,7 @@
 // Add upgrade preset to upgrade level
         $(document).on('click', '.add-upgrade', function () {
             const levelIndex = $(this).attr('data-upgrade-button');
-            console.log(levelIndex);
+            // console.log(levelIndex);
             const container = $(this).parent().find(`#upgrades-${levelIndex}`);
             const upgradeDiv = createUpgradeCard();
             container.append(upgradeDiv);
