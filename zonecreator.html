@@ -240,7 +240,7 @@
                 </div>
 
                 <h4 class="mt-4">Upgrade Levels</h4>
-                <div id="upgrade-levels" class="mb-3"></div>
+                <div id="upgrade-levels" class="mb-3 upgrade-levels"></div>
                 <button type="button" id="addUpgradeLevel" class="btn btn-secondary mb-3 add-upgrade-level" data-upgrade-level-button="${index}">Add Upgrade Level</button>
             </div>
         </div>
@@ -399,7 +399,7 @@
 
 // Update upgrade level index and nested references
         function updateUpgradeLevelIndexes() {
-            $('.upgradeLevel').each(function (index) {
+            $(this).find('.upgradeLevel').each(function (index) {
                 let print_index = index + 1;
                 $(this).attr('id', `upgradeLevel-${print_index}`);
                 $(this).find('h5').text(`Level ${print_index}`);
@@ -411,7 +411,8 @@
 
 // Add upgrade level
         $(document).on('click', '.add-upgrade-level', function () {
-            const index = $('.upgradeLevel').length+1;
+            // console.log(this)
+            const index = $(this).find('.add-upgrade-level').length+1;
             const upgradeLevelDiv = $(`
     <div id="upgradeLevel-${index}" class="upgradeLevel ms-5 mb-2">
       <div class="d-flex justify-content-between align-items-center mb-2">
@@ -427,7 +428,7 @@
       <hr/>
     </div>
   `);
-            $('#upgrade-levels').append(upgradeLevelDiv);
+            $(this).parent().find('.upgrade-levels').append(upgradeLevelDiv);
         });
 
 // Remove upgrade level
@@ -441,7 +442,8 @@
 // Add upgrade preset to upgrade level
         $(document).on('click', '.add-upgrade', function () {
             const levelIndex = $(this).attr('data-upgrade-button');
-            const container = $(`#upgrades-${levelIndex}`);
+            console.log(levelIndex);
+            const container = $(this).parent().find(`#upgrades-${levelIndex}`);
             const upgradeDiv = createUpgradeCard();
             container.append(upgradeDiv);
             populatePresetUpgradeDropdown(upgradeDiv.find('.presetDropdown'));
