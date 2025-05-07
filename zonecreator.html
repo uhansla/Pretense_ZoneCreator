@@ -97,54 +97,58 @@
                 <label for="initFile" class="form-label">Upload init.lua to load presets</label>
                 <input type="file" id="initFile" class="form-control" accept=".lua">
             </div>
+            <button id="addZone" class="btn btn-success mb-3">➕ Add Zone</button>
+            <div class="accordion" id="zonesList"></div>
 
-            <div class="mb-3">
-                <label for="zoneName" class="form-label">Zone Name *</label>
-                <input type="text" id="zoneName" class="form-control">
-            </div>
+<!--            <div class="zone-container border rounded p-3 mb-4">-->
+<!--                <div class="mb-3">-->
+<!--                    <label for="zoneName" class="form-label">Zone Name *</label>-->
+<!--                    <input type="text" id="zoneName" class="form-control">-->
+<!--                </div>-->
 
-            <div class="mb-3">
-                <label class="form-label">Initial Side *</label>
-                <div class="d-flex gap-3">
-                    <div class="form-check form-check-inline radio-highlight-red">
-                        <input class="form-check-input" type="radio" name="side" id="sideRed" value="1">
-                        <label class="form-check-label text-red" for="sideRed">Red (1)</label>
-                    </div>
-                    <div class="form-check form-check-inline radio-highlight-blue">
-                        <input class="form-check-input" type="radio" name="side" id="sideBlue" value="2">
-                        <label class="form-check-label text-blue" for="sideBlue">Blue (2)</label>
-                    </div>
-                </div>
-            </div>
+<!--                <div class="mb-3">-->
+<!--                    <label class="form-label">Initial Side *</label>-->
+<!--                    <div class="d-flex gap-3">-->
+<!--                        <div class="form-check form-check-inline radio-highlight-red">-->
+<!--                            <input class="form-check-input" type="radio" name="side" id="sideRed" value="1">-->
+<!--                            <label class="form-check-label text-red" for="sideRed">Red (1)</label>-->
+<!--                        </div>-->
+<!--                        <div class="form-check form-check-inline radio-highlight-blue">-->
+<!--                            <input class="form-check-input" type="radio" name="side" id="sideBlue" value="2">-->
+<!--                            <label class="form-check-label text-blue" for="sideBlue">Blue (2)</label>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
 
-            <div class="form-check mb-2">
-                <input type="checkbox" id="keepActive" class="form-check-input">
-                <label class="form-check-label" for="keepActive">Keep Active</label>
-            </div>
+<!--                <div class="form-check mb-2">-->
+<!--                    <input type="checkbox" id="keepActive" class="form-check-input">-->
+<!--                    <label class="form-check-label" for="keepActive">Keep Active</label>-->
+<!--                </div>-->
 
-            <div class="form-check mb-2">
-                <input type="checkbox" id="heloSpawn" class="form-check-input">
-                <label class="form-check-label" for="heloSpawn">🚁 Helicopter Spawn</label>
-            </div>
+<!--                <div class="form-check mb-2">-->
+<!--                    <input type="checkbox" id="heloSpawn" class="form-check-input">-->
+<!--                    <label class="form-check-label" for="heloSpawn">🚁 Helicopter Spawn</label>-->
+<!--                </div>-->
 
-            <div class="form-check mb-2">
-                <input type="checkbox" id="planeSpawn" class="form-check-input">
-                <label class="form-check-label" for="planeSpawn">✈️ Plane Spawn</label>
-            </div>
+<!--                <div class="form-check mb-2">-->
+<!--                    <input type="checkbox" id="planeSpawn" class="form-check-input">-->
+<!--                    <label class="form-check-label" for="planeSpawn">✈️ Plane Spawn</label>-->
+<!--                </div>-->
 
-            <div class="mb-3">
-                <label for="maxResource" class="form-label">Max Resource (optional)</label>
-                <input type="text" id="maxResource" class="form-control">
-            </div>
+<!--                <div class="mb-3">-->
+<!--                    <label for="maxResource" class="form-label">Max Resource (optional)</label>-->
+<!--                    <input type="text" id="maxResource" class="form-control">-->
+<!--                </div>-->
 
-            <div class="mb-3">
-                <label for="airbaseName" class="form-label">Airbase Name (optional)</label>
-                <input type="text" id="airbaseName" class="form-control">
-            </div>
+<!--                <div class="mb-3">-->
+<!--                    <label for="airbaseName" class="form-label">Airbase Name (optional)</label>-->
+<!--                    <input type="text" id="airbaseName" class="form-control">-->
+<!--                </div>-->
 
-            <h4 class="mt-4">Upgrade Levels</h4>
-            <div id="upgrade-levels" class="mb-3"></div>
-            <button type="button" id="addUpgradeLevel" class="btn btn-secondary mb-3">Add Upgrade Level</button>
+<!--                <h4 class="mt-4">Upgrade Levels</h4>-->
+<!--                <div id="upgrade-levels" class="mb-3"></div>-->
+<!--                <button type="button" id="addUpgradeLevel" class="btn btn-secondary mb-3">Add Upgrade Level</button>-->
+<!--            </div>-->
         </div>
     </div>
 
@@ -170,6 +174,87 @@
     hljs.highlightAll();
     let presetOptions = [];
     let presetUpgradeOptions = [];
+
+    let zoneIndex = 0;
+
+
+    /** Create ZONE **/
+    function createZoneForm(index) {
+        const zoneForm = $(
+            `
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#zonecollapse${index + 1}" aria-expanded="true" aria-controls="zonecollapse${index + 1}">
+                Zone ${index + 1}
+            </button>
+        </h2>
+        <div id="zonecollapse${index + 1}" class="accordion-collapse collapse show" data-bs-parent="#zoneList">
+            <div class="accordion-body">
+                <h4 class="mb-3">Zone ${index + 1}</h4>
+                <div class="mb-3">
+                    <label for="zoneName" class="form-label">Zone Name *</label>
+                    <input type="text" id="zoneName" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Initial Side *</label>
+                    <div class="d-flex gap-3">
+                        <div class="form-check form-check-inline radio-highlight-red">
+                            <input class="form-check-input" type="radio" name="side" id="sideRed" value="1">
+                            <label class="form-check-label text-red" for="sideRed">Red (1)</label>
+                        </div>
+                        <div class="form-check form-check-inline radio-highlight-blue">
+                            <input class="form-check-input" type="radio" name="side" id="sideBlue" value="2">
+                            <label class="form-check-label text-blue" for="sideBlue">Blue (2)</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-check mb-2">
+                    <input type="checkbox" id="keepActive" class="form-check-input">
+                    <label class="form-check-label" for="keepActive">Keep Active</label>
+                </div>
+
+                <div class="form-check mb-2">
+                    <input type="checkbox" id="heloSpawn" class="form-check-input">
+                    <label class="form-check-label" for="heloSpawn">🚁 Helicopter Spawn</label>
+                </div>
+
+                <div class="form-check mb-2">
+                    <input type="checkbox" id="planeSpawn" class="form-check-input">
+                    <label class="form-check-label" for="planeSpawn">✈️ Plane Spawn</label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="maxResource" class="form-label">Max Resource (optional)</label>
+                    <input type="text" id="maxResource" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label for="airbaseName" class="form-label">Airbase Name (optional)</label>
+                    <input type="text" id="airbaseName" class="form-control">
+                </div>
+
+                <h4 class="mt-4">Upgrade Levels</h4>
+                <div id="upgrade-levels" class="mb-3"></div>
+                <button type="button" id="addUpgradeLevel" class="btn btn-secondary mb-3">Add Upgrade Level</button>
+            </div>
+        </div>
+    </div>
+<!--    <div class="zone-container border rounded p-3 mb-4" data-zone-index="${index}">-->
+
+      `
+        );
+
+        return zoneForm;
+    }
+
+    $('#addZone').click(function () {
+        const zoneForm = createZoneForm(zoneIndex);
+        $('#zonesList').append(zoneForm);
+        zoneIndex++;
+    });
+
 
     function getSideName(side) {
         return side == 1 ? 'red' : 'blue'
@@ -320,7 +405,7 @@
         }
 
 // Add upgrade level
-        $('#addUpgradeLevel').click(function () {
+        $('.add-ugrade-level').click(function () {
             const index = $('.upgradeLevel').length+1;
             const upgradeLevelDiv = $(`
     <div id="upgradeLevel-${index}" class="upgradeLevel ms-5 mb-2">
@@ -439,110 +524,128 @@
 
 // LUA Generation
         $('#generateLua').click(function () {
-            let rawZoneName = $('#zoneName').val().trim();
-            let zoneKey = rawZoneName.toLowerCase().replace(/\s+/g, '_');
 
-            let side = $('input[name="side"]:checked').val();
-            let keepActive = $('#keepActive').is(':checked');
-            let heloSpawn = $('#heloSpawn').is(':checked');
-            let planeSpawn = $('#planeSpawn').is(':checked');
-            let airbaseName = $('#airbaseName').val().trim();
-            let maxResourceValue = $('#maxResource').val().trim();
+            let fullLua = '';
 
-            if (!rawZoneName) {
-                $('#errorMessage').text('Zone Name is required.').removeClass('d-none');
-                return;
-            } else {
-                $('#errorMessage').addClass('d-none').text('');
-            }
+            $('.zone-container').each(function () {
+                const zoneIndex = $(this).data('zone-index');
+                const rawZoneName = $(this).find('.zoneName').val().trim();
+                const zoneKey = zoneKeyRaw.toLowerCase().replace(/\s+/g, '_');
+
+                if (!zoneKeyRaw) return;
+
+                let lua = `zones.${zoneKey} = ZoneCommand:new("${zoneKeyRaw}")\n`;
+
+                /////
+                // let rawZoneName = $('#zoneName').val().trim();
+                // let zoneKey = rawZoneName.toLowerCase().replace(/\s+/g, '_');
+                // let lua = `zones.${zoneKey} = ZoneCommand:new("${rawZoneName}")\n`;
 
 
-            let lua = `zones.${zoneKey} = ZoneCommand:new("${rawZoneName}")\n`;
+                let side = $('input[name="side"]:checked').val();
+                let keepActive = $('#keepActive').is(':checked');
+                let heloSpawn = $('#heloSpawn').is(':checked');
+                let planeSpawn = $('#planeSpawn').is(':checked');
+                let airbaseName = $('#airbaseName').val().trim();
+                let maxResourceValue = $('#maxResource').val().trim();
 
-            if (side !== undefined) {
-                lua += `zones.${zoneKey}.initialState = { side=${side} }\n`;
-            }
-            if (keepActive) {
-                lua += `zones.${zoneKey}.keepActive = true\n`;
-            }
-            if (heloSpawn) {
-                lua += `zones.${zoneKey}.isHeloSpawn = true\n`;
-            }
-            if (planeSpawn) {
-                lua += `zones.${zoneKey}.isPlaneSpawn = true\n`;
-            }
-            if (maxResourceValue) {
-                lua += `zones.${zoneKey}.maxResource = ${maxResourceValue}\n`;
-            }
-            if (airbaseName) {
-                lua += `zones.${zoneKey}.airbaseName = "${airbaseName}"\n`;
-            }
+                if (!rawZoneName) {
+                    $('#errorMessage').text('Zone Name is required.').removeClass('d-none');
+                    return;
+                } else {
+                    $('#errorMessage').addClass('d-none').text('');
+                }
 
-            lua += `zones.${zoneKey}:defineUpgrades({\n`;
 
-            $('.upgradeLevel').each(function (levelIndex) {
-                lua += `    [${levelIndex + 1}] = {\n`;
+                if (side !== undefined) {
+                    lua += `zones.${zoneKey}.initialState = { side=${side} }\n`;
+                }
+                if (keepActive) {
+                    lua += `zones.${zoneKey}.keepActive = true\n`;
+                }
+                if (heloSpawn) {
+                    lua += `zones.${zoneKey}.isHeloSpawn = true\n`;
+                }
+                if (planeSpawn) {
+                    lua += `zones.${zoneKey}.isPlaneSpawn = true\n`;
+                }
+                if (maxResourceValue) {
+                    lua += `zones.${zoneKey}.maxResource = ${maxResourceValue}\n`;
+                }
+                if (airbaseName) {
+                    lua += `zones.${zoneKey}.airbaseName = "${airbaseName}"\n`;
+                }
 
-                const upgradeLines = [];
+                lua += `zones.${zoneKey}:defineUpgrades({\n`;
 
-                $(this).find('.upgrade-item').each(function () {
-                    let presetPath = $(this).find('.presetDropdown').val();
-                    let baseName = $(this).find('.extendedName').val().trim();
-                    let extendedName = `${zoneKey}-${baseName}-${getSideName(side)}`;
+                $('.upgradeLevel').each(function (levelIndex) {
+                    lua += `    [${levelIndex + 1}] = {\n`;
 
-                    if (presetPath && extendedName) {
-                        const productLines = [];
+                    const upgradeLines = [];
 
-                        p_count = 1
-                        $(this).find('.product-item').each(function () {
-                            let productPath = $(this).find('.productDropdown').val();
-                            let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${getSideName(side)}-${p_count}`;
+                    $(this).find('.upgrade-item').each(function () {
+                        let presetPath = $(this).find('.presetDropdown').val();
+                        let baseName = $(this).find('.extendedName').val().trim();
+                        let extendedName = `${zoneKey}-${baseName}-${getSideName(side)}`;
 
-                            if (productPath && productName) {
-                                const fields = [];
+                        if (presetPath && extendedName) {
+                            const productLines = [];
 
-                                // Extract optional mission field values
-                                const altitude = $(this).find('[name="altitude"]').val();
-                                const range = $(this).find('[name="range"]').val();
-                                const freq = $(this).find('[name="freq"]').val();
-                                const tacan = $(this).find('[name="tacan"]').val();
-                                const variant = $(this).find('[name="variant"]').val();
-                                const expend = $(this).find('[name="expend"]').val();
+                            p_count = 1
+                            $(this).find('.product-item').each(function () {
+                                let productPath = $(this).find('.productDropdown').val();
+                                let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${getSideName(side)}-${p_count}`;
 
-                                // Always include name
-                                fields.push(`name='${productName}'`);
-                                if (altitude) fields.push(`altitude=${altitude}`);
-                                if (range) fields.push(`range=${range}`);
-                                if (freq) fields.push(`freq='${freq}'`);
-                                if (tacan) fields.push(`tacan='${tacan}'`);
-                                if (variant) fields.push(`variant='${variant}'`);
-                                if (expend) fields.push(`expend=${expend}`);
+                                if (productPath && productName) {
+                                    const fields = [];
 
-                                productLines.push(`                     ${productPath}:extend({ ${fields.join(', ')} })`);
-                            }
+                                    // Extract optional mission field values
+                                    const altitude = $(this).find('[name="altitude"]').val();
+                                    const range = $(this).find('[name="range"]').val();
+                                    const freq = $(this).find('[name="freq"]').val();
+                                    const tacan = $(this).find('[name="tacan"]').val();
+                                    const variant = $(this).find('[name="variant"]').val();
+                                    const expend = $(this).find('[name="expend"]').val();
 
-                            p_count += 1;
-                        });
+                                    // Always include name
+                                    fields.push(`name='${productName}'`);
+                                    if (altitude) fields.push(`altitude=${altitude}`);
+                                    if (range) fields.push(`range=${range}`);
+                                    if (freq) fields.push(`freq='${freq}'`);
+                                    if (tacan) fields.push(`tacan='${tacan}'`);
+                                    if (variant) fields.push(`variant='${variant}'`);
+                                    if (expend) fields.push(`expend=${expend}`);
 
-                        const productBlock = productLines.length
-                            ? `,\n                products = {\n${productLines.join(',\n')}\n                }`
-                            : '';
+                                    productLines.push(`                     ${productPath}:extend({ ${fields.join(', ')} })`);
+                                }
 
-                        upgradeLines.push(
-                            `        ${presetPath}:extend({\n            name='${extendedName}'${productBlock}\n        })`
-                        );
-                    }
+                                p_count += 1;
+                            });
+
+                            const productBlock = productLines.length
+                                ? `,\n                products = {\n${productLines.join(',\n')}\n                }`
+                                : '';
+
+                            upgradeLines.push(
+                                `        ${presetPath}:extend({\n            name='${extendedName}'${productBlock}\n        })`
+                            );
+                        }
+                    });
+
+                    lua += upgradeLines.join(',\n') + (upgradeLines.length > 0 ? '\n' : '');
+                    lua += `    }${levelIndex < $('.upgradeLevel').length - 1 ? ',' : ''}\n`;
+
                 });
 
-                lua += upgradeLines.join(',\n') + (upgradeLines.length > 0 ? '\n' : '');
-                lua += `    }${levelIndex < $('.upgradeLevel').length - 1 ? ',' : ''}\n`;
+                lua += `})\n`;
 
+                fullLua += lua + '\n';
             });
 
-            lua += `})\n`;
 
-            $('#output').val(lua);
-            $('#highlightedLua').text(lua);
+
+            $('#output').val(fullLua);
+            $('#highlightedLua').text(fullLua);
             hljs.highlightElement(document.getElementById('highlightedLua'));
         });
 
