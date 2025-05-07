@@ -231,7 +231,7 @@
                     <input type="hidden" class="zoneTypeTemplate">
                 </div>
 
-                <div class="custom-controls d-none">
+                <div class="custom-controls">
                     <div class="form-check mb-2">
                         <input type="checkbox" id="keepActive" class="form-check-input">
                         <label class="form-check-label" for="keepActive">Keep Active</label>
@@ -272,11 +272,11 @@
         // Populate dropdown
         const templateSelect = zoneForm.find('.zoneTypeSelect');
         const hiddenInput = zoneForm.find('.zoneTypeTemplate');
-
+        templateSelect.append(`<option value="custom">Custom</option>`);
         Object.keys(upgrade_templates).forEach(key => {
             templateSelect.append(`<option value="${key}">${key}</option>`);
         });
-        templateSelect.append(`<option value="custom">Custom</option>`);
+
 
         // Show/hide controls based on selection
         templateSelect.on('change', function () {
