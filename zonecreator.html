@@ -188,16 +188,19 @@
             `
     <div id="zoneForm${index+1}" class="accordion-item">
         <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#zonecollapse${index + 1}" aria-expanded="true" aria-controls="zonecollapse${index + 1}">
+            <button class="accordion-button zone-heading" type="button" data-bs-toggle="collapse" data-bs-target="#zonecollapse${index + 1}" aria-expanded="true" aria-controls="zonecollapse${index + 1}">
                 Zone ${index + 1}
             </button>
         </h2>
         <div id="zonecollapse${index + 1}" class="accordion-collapse collapse show" data-bs-parent="#zoneList">
             <div class="accordion-body zone-container" data-zone-index="${index}">
-                <h4 class="mb-3">Zone ${index + 1}</h4>
+                <h4 class="mb-3 zone-label">Zone ${index + 1}</h4>
+                <div class="text-end">
+                  <button type="button" class="btn btn-sm btn-danger remove-zone">Remove Zone</button>
+                </div>
                 <div class="mb-3">
                     <label for="zoneName${index}" class="form-label">Zone Name *</label>
-                    <input type="text" id="zoneName${index}" class="form-control">
+                    <input type="text" id="zoneName${index}" data-zone-name-index="${index+1}" class="zone-name-input form-control">
                 </div>
 
                 <div class="mb-3">
@@ -252,6 +255,16 @@
 
         return zoneForm;
     }
+
+    $(document).on('change','.zone-name-input',function(){
+        // console.log('yo')
+        let label = $(this).val().trim()
+        const levelIndex = $(this).attr('data-zone-name-index');
+        // console.log($('#zoneForm'+levelIndex).find('.zone-label'));
+
+        $('#zoneForm'+levelIndex).find('.zone-label').text(label)
+        $('#zoneForm'+levelIndex).find('.zone-heading').text(label)
+    })
 
     $('#addZone').click(function () {
         const zoneForm = createZoneForm(zoneIndex);
