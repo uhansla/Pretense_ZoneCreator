@@ -693,7 +693,7 @@
                         $(this).find('.upgrade-item').each(function () {
                             let presetPath = $(this).find('.presetDropdown').val();
                             let baseName = $(this).find('.extendedName').val().trim();
-                            let sideColor = levelIndex===1 ? 'red' : 'blue'
+                            let sideColor = levelIndex===1 ? 'blue' : 'red'
                             let extendedName = `${zoneKey}-${baseName}-${sideColor}`;
 
                             if (presetPath && extendedName) {
