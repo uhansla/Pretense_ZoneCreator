@@ -98,57 +98,9 @@
                 <input type="file" id="initFile" class="form-control" accept=".lua">
             </div>
             <button id="addZone" class="btn btn-success mb-3">➕ Add Zone</button>
-            <div class="accordion" id="zonesList"></div>
-
-<!--            <div class="zone-container border rounded p-3 mb-4">-->
-<!--                <div class="mb-3">-->
-<!--                    <label for="zoneName" class="form-label">Zone Name *</label>-->
-<!--                    <input type="text" id="zoneName" class="form-control">-->
-<!--                </div>-->
-
-<!--                <div class="mb-3">-->
-<!--                    <label class="form-label">Initial Side *</label>-->
-<!--                    <div class="d-flex gap-3">-->
-<!--                        <div class="form-check form-check-inline radio-highlight-red">-->
-<!--                            <input class="form-check-input" type="radio" name="side" id="sideRed" value="1">-->
-<!--                            <label class="form-check-label text-red" for="sideRed">Red (1)</label>-->
-<!--                        </div>-->
-<!--                        <div class="form-check form-check-inline radio-highlight-blue">-->
-<!--                            <input class="form-check-input" type="radio" name="side" id="sideBlue" value="2">-->
-<!--                            <label class="form-check-label text-blue" for="sideBlue">Blue (2)</label>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="form-check mb-2">-->
-<!--                    <input type="checkbox" id="keepActive" class="form-check-input">-->
-<!--                    <label class="form-check-label" for="keepActive">Keep Active</label>-->
-<!--                </div>-->
-
-<!--                <div class="form-check mb-2">-->
-<!--                    <input type="checkbox" id="heloSpawn" class="form-check-input">-->
-<!--                    <label class="form-check-label" for="heloSpawn">🚁 Helicopter Spawn</label>-->
-<!--                </div>-->
-
-<!--                <div class="form-check mb-2">-->
-<!--                    <input type="checkbox" id="planeSpawn" class="form-check-input">-->
-<!--                    <label class="form-check-label" for="planeSpawn">✈️ Plane Spawn</label>-->
-<!--                </div>-->
-
-<!--                <div class="mb-3">-->
-<!--                    <label for="maxResource" class="form-label">Max Resource (optional)</label>-->
-<!--                    <input type="text" id="maxResource" class="form-control">-->
-<!--                </div>-->
-
-<!--                <div class="mb-3">-->
-<!--                    <label for="airbaseName" class="form-label">Airbase Name (optional)</label>-->
-<!--                    <input type="text" id="airbaseName" class="form-control">-->
-<!--                </div>-->
-
-<!--                <h4 class="mt-4">Upgrade Levels</h4>-->
-<!--                <div id="upgrade-levels" class="mb-3"></div>-->
-<!--                <button type="button" id="addUpgradeLevel" class="btn btn-secondary mb-3">Add Upgrade Level</button>-->
-<!--            </div>-->
+            <div class="accordion" id="zonesList">
+                <!-- ZONES will show up here -->
+            </div>
         </div>
     </div>
 
@@ -189,11 +141,11 @@
             </button>
         </h2>
         <div id="zonecollapse${index + 1}" class="accordion-collapse collapse show" data-bs-parent="#zoneList">
-            <div class="accordion-body" data-zone-index="${index}">
+            <div class="accordion-body zone-container" data-zone-index="${index}">
                 <h4 class="mb-3">Zone ${index + 1}</h4>
                 <div class="mb-3">
-                    <label for="zoneName" class="form-label">Zone Name *</label>
-                    <input type="text" id="zoneName" class="form-control">
+                    <label for="zoneName${index}" class="form-label">Zone Name *</label>
+                    <input type="text" id="zoneName${index}" class="form-control">
                 </div>
 
                 <div class="mb-3">
@@ -524,17 +476,16 @@
 
 // LUA Generation
         $('#generateLua').click(function () {
-
             let fullLua = '';
 
             $('.zone-container').each(function () {
                 const zoneIndex = $(this).data('zone-index');
-                const rawZoneName = $(this).find('.zoneName').val().trim();
-                const zoneKey = zoneKeyRaw.toLowerCase().replace(/\s+/g, '_');
+                const rawZoneName = $(this).find('#zoneName'+zoneIndex).val().trim();
+                const zoneKey = rawZoneName.toLowerCase().replace(/\s+/g, '_');
 
-                if (!zoneKeyRaw) return;
+                if (!rawZoneName) return;
 
-                let lua = `zones.${zoneKey} = ZoneCommand:new("${zoneKeyRaw}")\n`;
+                let lua = `zones.${zoneKey} = ZoneCommand:new("${rawZoneName}")\n`;
 
                 /////
                 // let rawZoneName = $('#zoneName').val().trim();
