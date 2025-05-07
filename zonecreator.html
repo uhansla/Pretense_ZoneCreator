@@ -31,6 +31,8 @@
     <!-- Dark -->
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/darkly/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Preset Templates -->
+    <script src="templates.js"></script>
     <style>
         textarea {
             height: 600px;
@@ -179,6 +181,11 @@
         "presets.upgrades.supply.refinery1"
     ];
 
+    function fillTemplate(template, values) {
+        console.log(values)
+        return template.replace(/{{(\w+)}}/g, (_, key) => values[key] ?? '');
+    }
+
     let zoneIndex = 0;
 
 
@@ -217,34 +224,43 @@
                     </div>
                 </div>
 
-                <div class="form-check mb-2">
-                    <input type="checkbox" id="keepActive" class="form-check-input">
-                    <label class="form-check-label" for="keepActive">Keep Active</label>
+                <div class="mb-2">
+                    <label class="form-label">Zone Type</label>
+                    <select class="form-select zoneTypeSelect">
+                    </select>
+                    <input type="hidden" class="zoneTypeTemplate">
                 </div>
 
-                <div class="form-check mb-2">
-                    <input type="checkbox" id="heloSpawn" class="form-check-input">
-                    <label class="form-check-label" for="heloSpawn">🚁 Helicopter Spawn</label>
-                </div>
+                <div class="custom-controls d-none">
+                    <div class="form-check mb-2">
+                        <input type="checkbox" id="keepActive" class="form-check-input">
+                        <label class="form-check-label" for="keepActive">Keep Active</label>
+                    </div>
 
-                <div class="form-check mb-2">
-                    <input type="checkbox" id="planeSpawn" class="form-check-input">
-                    <label class="form-check-label" for="planeSpawn">✈️ Plane Spawn</label>
-                </div>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" id="heloSpawn" class="form-check-input">
+                        <label class="form-check-label" for="heloSpawn">🚁 Helicopter Spawn</label>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="maxResource" class="form-label">Max Resource (optional)</label>
-                    <input type="text" id="maxResource" class="form-control">
-                </div>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" id="planeSpawn" class="form-check-input">
+                        <label class="form-check-label" for="planeSpawn">✈️ Plane Spawn</label>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="airbaseName" class="form-label">Airbase Name (optional)</label>
-                    <input type="text" id="airbaseName" class="form-control">
-                </div>
+                    <div class="mb-3">
+                        <label for="maxResource" class="form-label">Max Resource (optional)</label>
+                        <input type="text" id="maxResource" class="form-control">
+                    </div>
 
-                <h4 class="mt-4">Upgrade Levels</h4>
-                <div id="upgrade-levels" class="mb-3 upgrade-levels"></div>
-                <button type="button" id="addUpgradeLevel" class="btn btn-secondary mb-3 add-upgrade-level" data-upgrade-level-button="${index}">Add Upgrade Level</button>
+                    <div class="mb-3">
+                        <label for="airbaseName" class="form-label">Airbase Name (optional)</label>
+                        <input type="text" id="airbaseName" class="form-control">
+                    </div>
+
+                    <h4 class="mt-4">Upgrade Levels</h4>
+                    <div id="upgrade-levels" class="mb-3 upgrade-levels"></div>
+                    <button type="button" id="addUpgradeLevel" class="btn btn-secondary mb-3 add-upgrade-level" data-upgrade-level-button="${index}">Add Upgrade Level</button>
+                </div>
             </div>
         </div>
     </div>
@@ -252,6 +268,31 @@
 
       `
         );
+
+        // Populate dropdown
+        const templateSelect = zoneForm.find('.zoneTypeSelect');
+        const hiddenInput = zoneForm.find('.zoneTypeTemplate');
+
+        Object.keys(upgrade_templates).forEach(key => {
+            templateSelect.append(`<option value="${key}">${key}</option>`);
+        });
+        templateSelect.append(`<option value="custom">Custom</option>`);
+
+        // Show/hide controls based on selection
+        templateSelect.on('change', function () {
+            const val = $(this).val();
+            if (val === 'custom') {
+                zoneForm.find('.custom-controls').removeClass('d-none');
+                hiddenInput.val('');
+            } else {
+                zoneForm.find('.custom-controls').addClass('d-none');
+                const selected = $(this).val();
+                console.log(selected)
+                temp_string = upgrade_templates[selected]
+                let zone_name = zoneForm.find('.zone-name-input').val().trim().toLowerCase()
+                hiddenInput.val(fillTemplate(temp_string, {zoneName: zone_name}));
+            }
+        });
 
         return zoneForm;
     }
@@ -568,11 +609,6 @@
 
 
                 let side = $(this).find('input[name="side"]:checked').val();
-                let keepActive = $(this).find('#keepActive').is(':checked');
-                let heloSpawn = $(this).find('#heloSpawn').is(':checked');
-                let planeSpawn = $(this).find('#planeSpawn').is(':checked');
-                let airbaseName = $(this).find('#airbaseName').val().trim();
-                let maxResourceValue = $(this).find('#maxResource').val().trim();
 
                 if (!rawZoneName) {
                     $('#errorMessage').text('Zone Name is required.').removeClass('d-none');
@@ -585,82 +621,100 @@
                 if (side !== undefined) {
                     lua += `zones.${zoneKey}.initialState = { side=${side} }\n`;
                 }
-                if (keepActive) {
-                    lua += `zones.${zoneKey}.keepActive = true\n`;
-                }
-                if (heloSpawn) {
-                    lua += `zones.${zoneKey}.isHeloSpawn = true\n`;
-                }
-                if (planeSpawn) {
-                    lua += `zones.${zoneKey}.isPlaneSpawn = true\n`;
-                }
-                if (maxResourceValue) {
-                    lua += `zones.${zoneKey}.maxResource = ${maxResourceValue}\n`;
-                }
-                if (airbaseName) {
-                    lua += `zones.${zoneKey}.airbaseName = "${airbaseName}"\n`;
-                }
 
-                lua += `zones.${zoneKey}:defineUpgrades({\n`;
+                let isCustom = $(this).find('.zoneTypeSelect').val();
+                if (isCustom !== 'custom') {
 
-                $(this).find('.upgradeLevel').each(function (levelIndex) {
-                    lua += `    [${levelIndex + 1}] = {\n`;
+                    // Fill with template
+                    let templateString = $(this).find('.zoneTypeTemplate').val();
+                    lua += templateString;
 
-                    const upgradeLines = [];
+                } else {
 
-                    $(this).find('.upgrade-item').each(function () {
-                        let presetPath = $(this).find('.presetDropdown').val();
-                        let baseName = $(this).find('.extendedName').val().trim();
-                        let extendedName = `${zoneKey}-${baseName}-${getSideName(side)}`;
+                    // EXTRACT All the Values
+                    let keepActive = $(this).find('#keepActive').is(':checked');
+                    let heloSpawn = $(this).find('#heloSpawn').is(':checked');
+                    let planeSpawn = $(this).find('#planeSpawn').is(':checked');
+                    let airbaseName = $(this).find('#airbaseName').val().trim();
+                    let maxResourceValue = $(this).find('#maxResource').val().trim();
 
-                        if (presetPath && extendedName) {
-                            const productLines = [];
+                    if (keepActive) {
+                        lua += `zones.${zoneKey}.keepActive = true\n`;
+                    }
+                    if (heloSpawn) {
+                        lua += `zones.${zoneKey}.isHeloSpawn = true\n`;
+                    }
+                    if (planeSpawn) {
+                        lua += `zones.${zoneKey}.isPlaneSpawn = true\n`;
+                    }
+                    if (maxResourceValue) {
+                        lua += `zones.${zoneKey}.maxResource = ${maxResourceValue}\n`;
+                    }
+                    if (airbaseName) {
+                        lua += `zones.${zoneKey}.airbaseName = "${airbaseName}"\n`;
+                    }
 
-                            p_count = 1
-                            $(this).find('.product-item').each(function () {
-                                let productPath = $(this).find('.productDropdown').val();
-                                let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${getSideName(side)}-${p_count}`;
+                    lua += `zones.${zoneKey}:defineUpgrades({\n`;
 
-                                if (productPath && productName) {
-                                    const fields = [];
+                    $(this).find('.upgradeLevel').each(function (levelIndex) {
+                        lua += `    [${levelIndex + 1}] = {\n`;
 
-                                    // Extract optional mission field values
-                                    const altitude = $(this).find('[name="altitude"]').val();
-                                    const range = $(this).find('[name="range"]').val();
-                                    const freq = $(this).find('[name="freq"]').val();
-                                    const tacan = $(this).find('[name="tacan"]').val();
-                                    const variant = $(this).find('[name="variant"]').val();
-                                    const expend = $(this).find('[name="expend"]').val();
+                        const upgradeLines = [];
 
-                                    // Always include name
-                                    fields.push(`name='${productName}'`);
-                                    if (altitude) fields.push(`altitude=${altitude}`);
-                                    if (range) fields.push(`range=${range}`);
-                                    if (freq) fields.push(`freq='${freq}'`);
-                                    if (tacan) fields.push(`tacan='${tacan}'`);
-                                    if (variant) fields.push(`variant='${variant}'`);
-                                    if (expend) fields.push(`expend=${expend}`);
+                        $(this).find('.upgrade-item').each(function () {
+                            let presetPath = $(this).find('.presetDropdown').val();
+                            let baseName = $(this).find('.extendedName').val().trim();
+                            let extendedName = `${zoneKey}-${baseName}-${getSideName(side)}`;
 
-                                    productLines.push(`                     ${productPath}:extend({ ${fields.join(', ')} })`);
-                                }
+                            if (presetPath && extendedName) {
+                                const productLines = [];
 
-                                p_count += 1;
-                            });
+                                p_count = 1
+                                $(this).find('.product-item').each(function () {
+                                    let productPath = $(this).find('.productDropdown').val();
+                                    let productName = `${zoneKey}-${$(this).find('.productName').val().trim()}-${getSideName(side)}-${p_count}`;
 
-                            const productBlock = productLines.length
-                                ? `,\n                products = {\n${productLines.join(',\n')}\n                }`
-                                : '';
+                                    if (productPath && productName) {
+                                        const fields = [];
 
-                            upgradeLines.push(
-                                `        ${presetPath}:extend({\n            name='${extendedName}'${productBlock}\n        })`
-                            );
-                        }
+                                        // Extract optional mission field values
+                                        const altitude = $(this).find('[name="altitude"]').val();
+                                        const range = $(this).find('[name="range"]').val();
+                                        const freq = $(this).find('[name="freq"]').val();
+                                        const tacan = $(this).find('[name="tacan"]').val();
+                                        const variant = $(this).find('[name="variant"]').val();
+                                        const expend = $(this).find('[name="expend"]').val();
+
+                                        // Always include name
+                                        fields.push(`name='${productName}'`);
+                                        if (altitude) fields.push(`altitude=${altitude}`);
+                                        if (range) fields.push(`range=${range}`);
+                                        if (freq) fields.push(`freq='${freq}'`);
+                                        if (tacan) fields.push(`tacan='${tacan}'`);
+                                        if (variant) fields.push(`variant='${variant}'`);
+                                        if (expend) fields.push(`expend=${expend}`);
+
+                                        productLines.push(`                     ${productPath}:extend({ ${fields.join(', ')} })`);
+                                    }
+
+                                    p_count += 1;
+                                });
+
+                                const productBlock = productLines.length
+                                    ? `,\n                products = {\n${productLines.join(',\n')}\n                }`
+                                    : '';
+
+                                upgradeLines.push(
+                                    `        ${presetPath}:extend({\n            name='${extendedName}'${productBlock}\n        })`
+                                );
+                            }
+                        });
+
+                        lua += upgradeLines.join(',\n') + (upgradeLines.length > 0 ? '\n' : '');
+                        lua += `    }${levelIndex < $('.upgradeLevel').length - 1 ? ',' : ''}\n`;
+
                     });
-
-                    lua += upgradeLines.join(',\n') + (upgradeLines.length > 0 ? '\n' : '');
-                    lua += `    }${levelIndex < $('.upgradeLevel').length - 1 ? ',' : ''}\n`;
-
-                });
+                }
 
                 lua += `})\n`;
 
