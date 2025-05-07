@@ -124,8 +124,60 @@
 
 <script>
     hljs.highlightAll();
-    let presetOptions = [];
-    let presetUpgradeOptions = [];
+
+    //Default Options
+    let presetOptions = [
+        "presets.defenses.blue.ewr1",
+        "presets.defenses.blue.hawk",
+        "presets.defenses.blue.infantry1",
+        "presets.defenses.blue.infantry2",
+        "presets.defenses.blue.infantry3",
+        "presets.defenses.blue.shorad1",
+        "presets.defenses.blue.shorad2",
+        "presets.defenses.blue.shorad3",
+        "presets.defenses.red.ewr1",
+        "presets.defenses.red.ewr2",
+        "presets.defenses.red.infantry1",
+        "presets.defenses.red.infantry2",
+        "presets.defenses.red.infantry3",
+        "presets.defenses.red.sa2",
+        "presets.defenses.red.sa3",
+        "presets.defenses.red.sa5",
+        "presets.defenses.red.sa6",
+        "presets.defenses.red.shorad1",
+        "presets.defenses.red.shorad2",
+        "presets.defenses.red.shorad3",
+        "presets.missions.attack.cas",
+        "presets.missions.attack.helo",
+        "presets.missions.attack.sead",
+        "presets.missions.attack.strike",
+        "presets.missions.attack.surface",
+        "presets.missions.patrol.aircraft",
+        "presets.missions.supply.convoy",
+        "presets.missions.supply.helo",
+        "presets.missions.supply.transfer",
+        "presets.special.blue.infantry",
+        "presets.special.red.infantry"
+    ];
+    let presetUpgradeOptions = [
+        "presets.upgrades.airdef.comCenter",
+        "presets.upgrades.attack.ammoCache",
+        "presets.upgrades.basic.comPost",
+        "presets.upgrades.basic.tent",
+        "presets.upgrades.supply.ammoDepot",
+        "presets.upgrades.supply.antenna",
+        "presets.upgrades.supply.excavator",
+        "presets.upgrades.supply.factory",
+        "presets.upgrades.supply.factoryTank",
+        "presets.upgrades.supply.farm",
+        "presets.upgrades.supply.fuelCache",
+        "presets.upgrades.supply.fuelTank",
+        "presets.upgrades.supply.hq",
+        "presets.upgrades.supply.oilPump",
+        "presets.upgrades.supply.powerplant1",
+        "presets.upgrades.supply.powerplant2",
+        "presets.upgrades.supply.refinery1"
+    ];
 
     let zoneIndex = 0;
 
@@ -246,7 +298,8 @@
                 }
 
                 presetOptions = presetOptions.filter(item => !presetUpgradeOptions.includes(item));
-
+                console.log(presetUpgradeOptions);
+                console.log(presetOptions);
             };
             reader.readAsText(file);
         });
@@ -493,12 +546,12 @@
                 // let lua = `zones.${zoneKey} = ZoneCommand:new("${rawZoneName}")\n`;
 
 
-                let side = $('input[name="side"]:checked').val();
-                let keepActive = $('#keepActive').is(':checked');
-                let heloSpawn = $('#heloSpawn').is(':checked');
-                let planeSpawn = $('#planeSpawn').is(':checked');
-                let airbaseName = $('#airbaseName').val().trim();
-                let maxResourceValue = $('#maxResource').val().trim();
+                let side = $(this).find('input[name="side"]:checked').val();
+                let keepActive = $(this).find('#keepActive').is(':checked');
+                let heloSpawn = $(this).find('#heloSpawn').is(':checked');
+                let planeSpawn = $(this).find('#planeSpawn').is(':checked');
+                let airbaseName = $(this).find('#airbaseName').val().trim();
+                let maxResourceValue = $(this).find('#maxResource').val().trim();
 
                 if (!rawZoneName) {
                     $('#errorMessage').text('Zone Name is required.').removeClass('d-none');
@@ -529,7 +582,7 @@
 
                 lua += `zones.${zoneKey}:defineUpgrades({\n`;
 
-                $('.upgradeLevel').each(function (levelIndex) {
+                $(this).find('.upgradeLevel').each(function (levelIndex) {
                     lua += `    [${levelIndex + 1}] = {\n`;
 
                     const upgradeLines = [];
