@@ -1,62 +1,89 @@
 # Pretense Zone Tools
 
-This repository contains two standalone HTML tools for working with DCS Pretense missions:
-
-## 🔧 1. `zonecreator.html` — Zone Definition Generator
-
-A browser-based GUI for building `ZoneCommand` Lua snippets with the following features:
-
-- Upload an `init.lua` file to auto-load available presets
-- Create new zones with:
-    - Custom names
-    - Initial side (Red/Blue)
-    - Optional spawn and base settings
-- Add upgrade levels and product presets under each zone
-- Auto-generate structured Lua code with syntax highlighting
-- Support for optional mission fields (`altitude`, `range`, `freq`, `tacan`, `variant`, `expend`) when a preset contains `.missions.`
-- Copy and toggle raw/highlighted output
-- Works entirely in-browser — no internet connection required after loading
-
-## 🔗 2. `zone_connection.html` — Zone Connection Tool
-
-A lightweight companion tool that:
-
-- Parses zone names from the same `init.lua`
-- Lets you create `cm:addConnection(...)` Lua statements between zones
-- Supports optional "true state" with resource values
-- Outputs the Lua connection logic for pasting into your mission
+This repository contains two browser-based tools to assist mission creators using the Pretense framework in DCS World.
 
 ---
 
-## 📂 How to Use
+## ✈️ 1. `zonecreator.html` — Zone & Upgrade Builder
 
-1. Open either `zonecreator.html` or `zone_connection.html` in your web browser (Chrome, Edge, Firefox, etc.)
-2. Upload your `init.lua` file when prompted
-    - This file can be found inside the `.miz` file of a Pretense mission:
-        - Change the `.miz` file extension to `.zip`
-        - Extract it and locate `init.lua` under the `mission` or `scripts` folder
-3. Use the UI to configure zones or define zone connections
-4. Copy and paste the generated Lua code into your mission's Lua files
+A fully client-side tool for generating `ZoneCommand` definitions in Lua for Pretense missions.
 
----
+### Key Features
 
-## 🗂 Files Included
-
-| File                | Purpose                                  |
-|---------------------|------------------------------------------|
-| `zonecreator.html`  | Visual tool to define zones and upgrades |
-| `zone_connection.html` | Tool to define logical links between zones |
-
----
-
-## ❗Requirements
-
-- No installation needed — runs fully client-side in a modern browser
-- Requires a valid `init.lua` file from a Pretense `.miz` mission
+- Upload your mission's `init.lua` file to extract available presets
+- Create multiple zones, each with:
+    - Custom name, side (Red/Blue), and type
+    - Optional flags: keep active, helicopter spawn, plane spawn, airbase name, and max resource value
+- Support for predefined templates (from `templates.js`) or fully custom zone definitions
+- Add up to **2 upgrade levels per zone**, each with multiple upgrades and nested products
+- Auto-fills product and upgrade names and supports duplication
+- Automatically includes optional mission fields (`altitude`, `range`, `freq`, `tacan`, `variant`, `expend`) for `.missions.` presets
+- Toggle between raw and syntax-highlighted Lua output
+- Live preview and automatic regeneration of Lua on every change
+- Supports copy-to-clipboard for fast insertion into mission files
 
 ---
 
-## ✍️ Credits
-A big thanks to SQNLDR Salival[66] from the No. 80 Wing vRAAF group for coming up with this idea and helping out with the code! 
+## 🔗 2. `zone_connection.html` — Zone Link Creator
 
-These tools are built to assist mission creators using the Pretense framework in DCS World. 
+Create Lua logic for inter-zone connections using a lightweight interface. Thanks to SQNLDR Salival[66] of No. 80 Wing vRAAF for creating this!
+
+### Features
+
+- Upload an `init.lua` to load zone names
+- Select two zones to connect
+- Optionally define `trueState` and a resource amount
+- Output `cm:addConnection(...)` lines ready for copy-pasting into your mission
+
+---
+
+## 📁 How to Use
+
+1. **Download and open** `zonecreator.html` or `zone_connection.html` in any modern web browser (Chrome, Edge, Firefox)
+   1. Please note that `zonecreator.html` needs `template.js` as well since it stores the predefined templates there 
+2. **Upload your `init.lua` file** when prompted
+    - This can be extracted from a Pretense `.miz` mission by:
+        - Renaming the `.miz` to `.zip`
+        - Extracting it
+        - Locating `init.lua` in the `mission/` or `scripts/` folder
+3. Use the interface to build zones or define connections
+4. Copy the generated Lua code and paste it into your mission files
+
+---
+
+## 🧠 Templates
+
+Zone templates defined in `templates.js` (like `FOB`, `Big AFB`) include dynamic placeholders such as `{{zoneName}}`. These are filled automatically when a template is selected.
+
+If a template is selected, all zone configuration fields are hidden. Selecting **Custom** enables full manual configuration.
+
+---
+
+## 📦 Files Included
+
+| File                 | Description                                   |
+|----------------------|-----------------------------------------------|
+| `zonecreator.html`   | Full GUI to create zones, upgrades, and products |
+| `zone_connection.html` | Minimal UI to generate zone-to-zone connections |
+| `templates.js`       | JavaScript object defining reusable zone templates |
+| `README.md`          | This documentation file                       |
+
+---
+
+## ⚙️ Requirements
+
+- No installation needed
+- Works fully offline after opening in a browser
+- Requires a valid `init.lua` from a Pretense mission
+
+---
+
+## 🙌 Credits
+
+Thanks to **SQNLDR Salival[66] of No. 80 Wing vRAAF** for the initial concept and support.
+
+These tools are built to make Pretense mission scripting faster, safer, and easier.
+
+---
+
+> 💡 If you have feature suggestions, feel free to fork or open an issue!
