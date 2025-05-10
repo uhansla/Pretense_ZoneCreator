@@ -1,5 +1,470 @@
 const upgrade_templates = {}
 
+upgrade_templates['Oil Fields'] = `
+zones.{{zoneName}}:defineUpgrades({
+    [1] = {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-outpost-red',
+            products = {
+                presets.special.red.infantry:extend({ name='{{zoneName}}-defense-red'}),
+                presets.defenses.red.infantry:extend({ name='{{zoneName}}-garrison-red'})
+            }
+        }),
+        presets.upgrades.supply.oilPump:extend({
+            name='{{zoneName}}-pump-red-1',
+            products = {
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red1'})
+            }
+        }),
+        presets.upgrades.supply.oilPump:extend({
+            name='{{zoneName}}-pump-red-2',
+            products = {
+                presets.missions.supply.convoy:extend({name='{{zoneName}}-supply-red-1'})
+            }
+        }),
+        presets.upgrades.supply.oilPump:extend({
+            name='{{zoneName}}-pump-red-3',
+            products = {
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red2'})
+            }
+        }),
+        presets.upgrades.supply.oilPump:extend({
+            name='{{zoneName}}-pump-red-4',
+            products = {
+                presets.missions.supply.convoy:extend({name='{{zoneName}}-supply-red-2'})
+            }
+        })
+    },
+    [2] = {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-outpost-blue',
+            products = {
+                presets.special.blue.infantry:extend({ name='{{zoneName}}-defense-blue'}),
+                presets.defenses.blue.infantry:extend({ name='{{zoneName}}-garrison-blue'})
+            }
+        }),
+        presets.upgrades.supply.oilPump:extend({
+            name='{{zoneName}}-pump-blue-1',
+            products = {
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue1'})
+            }
+        }),
+        presets.upgrades.supply.oilPump:extend({
+            name='{{zoneName}}-pump-blue-2',
+            products = {
+                presets.missions.supply.convoy:extend({name='{{zoneName}}-supply-blue-1'})
+            }
+        }),
+        presets.upgrades.supply.oilPump:extend({
+            name='{{zoneName}}-pump-blue-3',
+            products = {
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue2'})
+            }
+        }),
+        presets.upgrades.supply.oilPump:extend({
+            name='{{zoneName}}-pump-blue-4',
+            products = {
+                presets.missions.supply.convoy:extend({name='{{zoneName}}-supply-blue-2'})
+            }
+        })
+    }
+})
+`;
+
+upgrade_templates['Farm'] = `
+zones.{{zoneName}}:defineUpgrades({
+    [1] = 
+    {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-tent-red',
+            products = {
+                presets.special.red.infantry:extend({ name='{{zoneName}}-defense-red'}),
+                presets.defenses.red.infantry:extend({ name='{{zoneName}}-garrison-red'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}:extend({
+            name='{{zoneName}}-prod-red-1',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-red'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}:extend({
+            name='{{zoneName}}-prod-red-2',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-red'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red'})
+            }
+        })
+    },
+    [2] = 
+    {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-tent-blue',
+            products = {
+                presets.special.blue.infantry:extend({ name='{{zoneName}}-defense-blue'}),
+                presets.defenses.blue.infantry:extend({ name='{{zoneName}}-garrison-blue'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}:extend({
+            name='{{zoneName}}-prod-blue-1',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-blue'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}:extend({
+            name='{{zoneName}}-prod-blue-2',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-blue'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue'})
+            }
+        })
+    }
+})
+`;
+
+upgrade_templates['Intel Center'] = `
+zones.{{zoneName}}:defineUpgrades({
+    [1] = 
+    {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-tent-red',
+            products = {
+                presets.special.red.infantry:extend({ name='{{zoneName}}-defense-red'}),
+                presets.defenses.red.infantry:extend({ name='{{zoneName}}-garrison-red'})
+            }
+        }),
+        presets.upgrades.supply.hq:extend({
+            name='{{zoneName}}-hq-red',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-red'}),
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-red-1'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red'})
+            }
+        }),
+        presets.upgrades.supply.antenna:extend({
+            name='{{zoneName}}-antenna-red',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.antenna:extend({
+            name='{{zoneName}}-antenna-red-1',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.antenna:extend({
+            name='{{zoneName}}-antenna-red-2',
+            products = {
+            }
+        })
+    },
+    [2] = 
+    {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-tent-blue',
+            products = {
+                presets.special.blue.infantry:extend({ name='{{zoneName}}-defense-blue'}),
+                presets.defenses.blue.infantry:extend({ name='{{zoneName}}-garrison-blue'})
+            }
+        }),
+        presets.upgrades.supply.hq:extend({
+            name='{{zoneName}}-hq-blue',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-blue'}),
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-blue-1'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue'})
+            }
+        }),
+        presets.upgrades.supply.antenna:extend({
+            name='{{zoneName}}-antenna-blue',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.antenna:extend({
+            name='{{zoneName}}-antenna-blue-1',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.antenna:extend({
+            name='{{zoneName}}-antenna-blue-2',
+            products = {
+            }
+        })
+    }
+})
+`;
+
+upgrade_templates['Power Plant'] = `
+zones.{{zoneName}}:defineUpgrades({
+    [1] = 
+    {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-tent-red',
+            products = {
+                presets.special.red.infantry:extend({ name='{{zoneName}}-defense-red'}),
+                presets.defenses.red.infantry:extend({ name='{{zoneName}}-garrison-red'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}1:extend({
+            name='{{zoneName}}-building-red-1',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-red'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}2:extend({
+            name='{{zoneName}}-building-red-2',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-red-1'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red'})
+            }
+        })
+    },
+    [2] = 
+    {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-tent-blue',
+            products = {
+                presets.special.blue.infantry:extend({ name='{{zoneName}}-defense-blue'}),
+                presets.defenses.blue.infantry:extend({ name='{{zoneName}}-garrison-blue'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}1:extend({
+            name='{{zoneName}}-building-blue-1',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-blue'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}2:extend({
+            name='{{zoneName}}-building-blue-2',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-blue-1'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue'})
+            }
+        })
+    }
+})
+`;
+
+upgrade_templates['Weapon Depot'] = `
+zones.{{zoneName}}:defineUpgrades({
+    [1] = {
+        presets.upgrades.basic.tent:extend({
+            name='weapons-tent-red',
+            products = {
+                presets.special.red.infantry:extend({ name='weapons-defense-red'}),
+                presets.defenses.red.infantry:extend({ name='weapons-garrison-red'})
+            }
+        }),
+        presets.upgrades.supply.ammoDepot:extend({
+            name='weapons-ammo-red-1',
+            products = {
+                presets.missions.supply.convoy:extend({name='weapons-supply-red-1'}),
+                presets.missions.supply.transfer:extend({name='weapons-transfer-red-1'})
+            }
+        }),
+        presets.upgrades.supply.ammoDepot:extend({
+            name='weapons-ammo-red-2',
+            products = {
+                presets.missions.supply.convoy:extend({name='weapons-supply-red-2'}),
+                presets.missions.supply.transfer:extend({name='weapons-transfer-red-2'})
+            }
+        })
+    },
+    [2] = {
+        presets.upgrades.basic.tent:extend({
+            name='weapons-tent-blue',
+            products = {
+                presets.special.blue.infantry:extend({ name='weapons-defense-blue'}),
+                presets.defenses.blue.infantry:extend({ name='weapons-garrison-blue'})
+            }
+        }),
+        presets.upgrades.supply.ammoDepot:extend({
+            name='weapons-ammo-blue-1',
+            products = {
+                presets.missions.supply.convoy:extend({name='weapons-supply-blue-1'}),
+                presets.missions.supply.transfer:extend({name='weapons-transfer-blue-1'})
+            }
+        }),
+        presets.upgrades.supply.ammoDepot:extend({
+            name='weapons-ammo-blue-2',
+            products = {
+                presets.missions.supply.convoy:extend({name='weapons-supply-blue-2'}),
+                presets.missions.supply.transfer:extend({name='weapons-transfer-blue-2'})
+            }
+        })
+    }
+})
+`;
+
+upgrade_templates['Factory'] = `
+zones.{{zoneName}}:defineUpgrades({
+    [1] = 
+    {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-tent-red',
+            products = {
+                presets.special.red.infantry:extend({ name='{{zoneName}}-defense-red'}),
+                presets.defenses.red.infantry:extend({ name='{{zoneName}}-garrison-red'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}:extend({
+            name='{{zoneName}}-prod-red-1',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-red-1'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}:extend({
+            name='{{zoneName}}-prod-red-2',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-red-2'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red2'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}Tank:extend({
+            name='{{zoneName}}-tank-red-1',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}Tank:extend({
+            name='{{zoneName}}-tank-red-2',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}Tank:extend({
+            name='{{zoneName}}-tank-red-3',
+            products = {
+            }
+        })
+    },
+    [2] = 
+    {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-tent-blue',
+            products = {
+                presets.special.blue.infantry:extend({ name='{{zoneName}}-defense-blue'}),
+                presets.defenses.blue.infantry:extend({ name='{{zoneName}}-garrison-blue'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}:extend({
+            name='{{zoneName}}-prod-blue-1',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-blue-1'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}:extend({
+            name='{{zoneName}}-prod-blue-2',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-blue-2'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue2'})
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}Tank:extend({
+            name='{{zoneName}}-tank-blue-1',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}Tank:extend({
+            name='{{zoneName}}-tank-blue-2',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.{{zoneName}}Tank:extend({
+            name='{{zoneName}}-tank-blue-3',
+            products = {
+            }
+        })
+    }
+})
+`
+
+upgrade_templates['Distillery'] = `
+zones.{{zoneName}}:defineUpgrades({
+    [1] = 
+    {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-tent-red',
+            products = {
+                presets.special.red.infantry:extend({ name='{{zoneName}}-defense-red'}),
+                presets.defenses.red.infantry:extend({ name='{{zoneName}}-garrison-red'})
+            }
+        }),
+        presets.upgrades.supply.factory:extend({
+            name='{{zoneName}}-prod-red-1',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-red-1'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red'})
+            }
+        }),
+        presets.upgrades.supply.factory:extend({
+            name='{{zoneName}}-prod-red-2',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-red-2', capacity=2000}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-red2'})
+            }
+        }),
+        presets.upgrades.supply.factoryTank:extend({
+            name='{{zoneName}}-tank-red-1',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.factoryTank:extend({
+            name='{{zoneName}}-tank-red-2',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.factoryTank:extend({
+            name='{{zoneName}}-tank-red-3',
+            products = {
+            }
+        })
+    },
+    [2] = 
+    {
+        presets.upgrades.basic.tent:extend({
+            name='{{zoneName}}-tent-blue',
+            products = {
+                presets.special.blue.infantry:extend({ name='{{zoneName}}-defense-blue'}),
+                presets.defenses.blue.infantry:extend({ name='{{zoneName}}-garrison-blue'})
+            }
+        }),
+        presets.upgrades.supply.factory:extend({
+            name='{{zoneName}}-prod-blue-1',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-blue-1'}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue'})
+            }
+        }),
+        presets.upgrades.supply.factory:extend({
+            name='{{zoneName}}-prod-blue-2',
+            products = {
+                presets.missions.supply.convoy:extend({ name='{{zoneName}}-supply-blue-2', capacity=2000}),
+                presets.missions.supply.transfer:extend({name='{{zoneName}}-transfer-blue2'})
+            }
+        }),
+        presets.upgrades.supply.factoryTank:extend({
+            name='{{zoneName}}-tank-blue-1',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.factoryTank:extend({
+            name='{{zoneName}}-tank-blue-2',
+            products = {
+            }
+        }),
+        presets.upgrades.supply.factoryTank:extend({
+            name='{{zoneName}}-tank-blue-3',
+            products = {
+            }
+        })
+    }
+})
+`;
+
 upgrade_templates['FOB'] = `
 zones.{{zoneName}}.maxResource = 20000
 zones.{{zoneName}}:defineUpgrades({
