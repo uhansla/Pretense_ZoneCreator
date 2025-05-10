@@ -290,7 +290,7 @@
                 console.log(selected)
                 temp_string = upgrade_templates[selected]
                 let rawZoneName = zoneForm.find('.zone-name-input').val().trim();
-                let zone_name = rawZoneName.toLowerCase().replace(/\s+/g, '_');
+                let zone_name = rawZoneName.toLowerCase().replace(/[\s-]+/g, '_');
                 hiddenInput.val(fillTemplate(temp_string, {zoneName: zone_name, rawZoneName: rawZoneName}));
             }
         });
@@ -626,7 +626,7 @@
             $('.zone-container').each(function () {
                 const zoneIndex = $(this).data('zone-index');
                 const rawZoneName = $(this).find('#zoneName'+zoneIndex).val().trim();
-                const zoneKey = rawZoneName.toLowerCase().replace(/\s+/g, '_');
+                const zoneKey = rawZoneName.toLowerCase().replace(/[\s-]+/g, '_');
 
                 if (!rawZoneName) return;
 
