@@ -214,11 +214,11 @@
                     <label class="form-label">Initial Side *</label>
                     <div class="d-flex gap-3">
                         <div class="form-check form-check-inline radio-highlight-red">
-                            <input class="form-check-input" type="radio" name="side" id="sideRed" value="1">
+                            <input class="form-check-input" type="radio" name="side${index}" id="sideRed" value="1">
                             <label class="form-check-label text-red" for="sideRed">Red (1)</label>
                         </div>
                         <div class="form-check form-check-inline radio-highlight-blue">
-                            <input class="form-check-input" type="radio" name="side" id="sideBlue" value="2">
+                            <input class="form-check-input" type="radio" name="side${index}" id="sideBlue" value="2">
                             <label class="form-check-label text-blue" for="sideBlue">Blue (2)</label>
                         </div>
                     </div>
@@ -637,8 +637,8 @@
                 // let zoneKey = rawZoneName.toLowerCase().replace(/\s+/g, '_');
                 // let lua = `zones.${zoneKey} = ZoneCommand:new("${rawZoneName}")\n`;
 
-
-                let side = $(this).find('input[name="side"]:checked').val();
+                let sideOption = "side"+zoneIndex;
+                let side = $(this).find('input[name="'+sideOption+'"]:checked').val();
 
                 if (!rawZoneName) {
                     $('#errorMessage').text('Zone Name is required.').removeClass('d-none');
