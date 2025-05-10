@@ -68,7 +68,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Farm'] = `
@@ -121,7 +120,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Intel Center'] = `
@@ -192,7 +190,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Power Plant'] = `
@@ -245,7 +242,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Weapon Depot'] = `
@@ -296,7 +292,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Factory'] = `
@@ -379,7 +374,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `
 
 upgrade_templates['Distillery'] = `
@@ -462,7 +456,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Assault Depot'] = `
@@ -511,7 +504,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Helo Assault Depot'] = `
@@ -562,7 +554,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Forward Command Base'] = `
@@ -602,7 +593,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['SAM Command Post'] = `
@@ -638,7 +628,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Mine'] = `
@@ -705,7 +694,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Assault Depot (Max 20000)'] = `
@@ -755,7 +743,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `
 
 upgrade_templates['Big AFB'] = `
@@ -829,7 +816,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Medium AFB'] = `
@@ -896,7 +882,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Small AFB'] = `
@@ -964,7 +949,6 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
 
 upgrade_templates['Helibase'] = `
@@ -1019,5 +1003,4 @@ zones.{{zoneName}}:defineUpgrades({
             }
         })
     }
-})
 `;
