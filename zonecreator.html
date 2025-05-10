@@ -290,7 +290,7 @@
                 console.log(selected)
                 temp_string = upgrade_templates[selected]
                 let rawZoneName = zoneForm.find('.zone-name-input').val().trim();
-                let zone_name = rawZoneName.toLowerCase();
+                let zone_name = rawZoneName.toLowerCase().replace(/\s+/g, '_');
                 hiddenInput.val(fillTemplate(temp_string, {zoneName: zone_name, rawZoneName: rawZoneName}));
             }
         });
